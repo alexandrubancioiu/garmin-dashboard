@@ -40,13 +40,34 @@
   .jt-big small { font-family: var(--font-anthropic-sans); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); margin-left: 4px; }
   .jt-sub { margin: 0; font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); font-variant-numeric: tabular-nums; min-height: 1.3em; }
   .jt-spark { height: 34px; margin-top: auto; }
-  .jt-status { grid-column: 1 / -1; flex-direction: row; flex-wrap: wrap; align-items: center; gap: var(--cds-gap-md) var(--cds-gap-xl); }
-  .jt-status-main { display: flex; flex-direction: column; gap: 4px; min-width: 0; flex: 0 1 auto; }
-  .jt-big-word { font-size: 1.75rem; overflow-wrap: anywhere; }
-  .jt-status-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(6rem, 1fr)); gap: var(--cds-gap-md); margin: 0; flex: 1 1 22rem; min-width: 0; }
+  .jt-duo { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)); gap: var(--cds-gap-md); }
+  .jt-status, .jt-vo2 { display: flex; flex-direction: column; gap: var(--cds-gap-sm); min-width: 0; }
+  .jt-status-word { margin: 0; display: flex; align-items: center; gap: 10px; font-family: var(--font-anthropic-serif); font-weight: 400; font-size: 2rem; line-height: 1.15; overflow-wrap: anywhere; }
+  .jt-status-dot { flex: none; width: 12px; height: 12px; border-radius: 50%; }
+  .jt-status-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--cds-gap-md); margin: 0; }
   .jt-status-stats > div { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
   .jt-status-stats dt { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
   .jt-status-stats dd { margin: 0; font-family: var(--font-anthropic-serif); font-size: 1.4rem; line-height: 1.2; font-variant-numeric: tabular-nums; }
+  .jt-acwr { display: flex; flex-direction: column; gap: 6px; margin-top: auto; }
+  .jt-acwr-head { display: flex; justify-content: space-between; gap: 8px; font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+  .jt-acwr-head b { color: var(--color-fg); font-weight: var(--cds-font-weight-medium); font-variant-numeric: tabular-nums; }
+  .jt-acwr-bar { position: relative; height: 10px; border-radius: 5px; background: var(--cds-chart-grid); }
+  .jt-acwr-band { position: absolute; top: 0; bottom: 0; border-radius: 5px; background: var(--color-ok); opacity: 0.35; }
+  .jt-acwr-mark { position: absolute; top: -5px; width: 5px; height: 20px; border-radius: 3px; transform: translateX(-50%); box-shadow: 0 0 0 2px var(--color-panel); }
+  .jt-acwr-scale { display: flex; justify-content: space-between; font-size: 11px; color: var(--color-fg-muted); font-variant-numeric: tabular-nums; }
+  .jt-vo2-main { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 14px; }
+  .jt-vo2-val { margin: 0; font-family: var(--font-anthropic-serif); font-weight: 400; font-size: 3.4rem; line-height: 1; font-variant-numeric: tabular-nums; }
+  .jt-vo2-val small { font-family: var(--font-anthropic-sans); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); margin-left: 6px; }
+  .jt-vo2-delta { margin: 0; font-size: var(--cds-font-size-body); font-weight: var(--cds-font-weight-medium); font-variant-numeric: tabular-nums; color: var(--color-fg-muted); }
+  .jt-vo2-delta.is-up { color: var(--color-ok); }
+  .jt-vo2-delta.is-down { color: var(--color-bad); }
+  .jt-chart.jt-vo2-chart { min-height: 100px; }
+  .jt-week-load { display: flex; flex-direction: column; gap: 6px; }
+  .jt-week-chart { display: flex; align-items: flex-end; gap: 6px; height: 96px; }
+  .jt-wl-col { flex: 1 1 0; min-width: 0; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 3px; font-size: 11px; color: var(--color-fg-muted); font-variant-numeric: tabular-nums; }
+  .jt-wl-col b { color: var(--color-fg); font-weight: var(--cds-font-weight-medium); }
+  .jt-wl-bar { width: 100%; max-width: 28px; min-height: 2px; border-radius: 4px 4px 2px 2px; }
+  .jt-vo2-chart svg { display: block; width: 100%; overflow: visible; }
   .jt-spark svg { display: block; width: 100%; height: 34px; overflow: visible; }
 
   /* Charts */
@@ -155,18 +176,34 @@
           <p class="jt-sub" data-draw="bb-sub">—</p>
           <div class="jt-spark" data-draw="bb-spark" data-source="daily"></div>
         </article>
-        <article class="jt-card jt-tile jt-status" id="status-garmin">
-          <div class="jt-status-main">
+        <div class="jt-duo">
+          <article class="jt-card jt-vo2" id="vo2max">
+            <h3 class="jt-label">VO2max</h3>
+            <div class="jt-vo2-main">
+              <p class="jt-vo2-val" data-draw="vo2-val">—</p>
+              <p class="jt-vo2-delta" data-draw="vo2-delta">—</p>
+            </div>
+            <div class="jt-chart jt-vo2-chart" id="chart-vo2max" data-draw="vo2-chart" data-source="vo2"></div>
+            <p class="jt-note">Garmin estimates VO2max from the pace and heart rate of your runs. The line shows it over the last 6 months.</p>
+          </article>
+          <article class="jt-card jt-status" id="status-garmin">
             <h3 class="jt-label">Garmin training status</h3>
-            <p class="jt-big jt-big-word" data-draw="status-val">—</p>
-          </div>
-          <dl class="jt-status-stats">
-            <div><dt>Acute load</dt><dd data-draw="status-acute">—</dd></div>
-            <div><dt>Chronic load</dt><dd data-draw="status-chronic">—</dd></div>
-            <div><dt>Acute/chronic ratio</dt><dd data-draw="status-acwr">—</dd></div>
-            <div><dt>VO2max</dt><dd data-draw="status-vo2">—</dd></div>
-          </dl>
-        </article>
+            <p class="jt-status-word" data-draw="status-val">—</p>
+            <dl class="jt-status-stats">
+              <div><dt>Acute load (7 days)</dt><dd data-draw="status-acute">—</dd></div>
+              <div><dt>Chronic load (28 days)</dt><dd data-draw="status-chronic">—</dd></div>
+            </dl>
+            <div class="jt-week-load">
+              <div class="jt-acwr-head"><span>Training load, last 7 days</span></div>
+              <div class="jt-week-chart" id="chart-week-load" data-draw="load-week" data-source="pmc"></div>
+            </div>
+            <div class="jt-acwr">
+              <div class="jt-acwr-head"><span>Acute/chronic ratio</span><b data-draw="status-acwr">—</b></div>
+              <div class="jt-acwr-bar" data-draw="acwr-bar" data-source="status"></div>
+              <div class="jt-acwr-scale"><span>0.5</span><span>optimal 0.8–1.3</span><span>2.0</span></div>
+            </div>
+          </article>
+        </div>
       </div>
     </div>
   </section>
@@ -574,6 +611,26 @@
       .sort((a, b) => (a.date < b.date ? -1 : 1)),
   });
 
+  dash.calc('vo2', {
+    title: 'VO2max from runs',
+    description: 'The VO2max Garmin recorded with each run, one value per day (the highest that day), over the activity history.',
+    inputs: ['activities'],
+    fn: (activities) => {
+      const byDay = new Map();
+      activities.filter((a) => a.sport === 'run' && a.vo2max != null).forEach((a) => {
+        byDay.set(a.date, Math.max(byDay.get(a.date) ?? -Infinity, Number(a.vo2max)));
+      });
+      return [...byDay].map(([date, vo2max]) => ({ date, vo2max })).sort((a, b) => (a.date < b.date ? -1 : 1));
+    },
+  });
+
+  dash.calc('vo2_change', {
+    title: 'VO2max change',
+    description: 'The latest VO2max from a run minus the first one in the activity history.',
+    inputs: ['vo2'],
+    fn: (vo2) => (vo2.length >= 2 ? Math.round((vo2[vo2.length - 1].vo2max - vo2[0].vo2max) * 10) / 10 : null),
+  });
+
   dash.calc('acts', {
     title: 'Recent activities',
     description: 'The last 25 activities, with duration as hours:minutes and pace for running (min/km) and swimming (min/100 m).',
@@ -769,18 +826,121 @@
     if (r.stress_avg != null) { el.appendChild(document.createTextNode(' · average stress ')); JT.mark(el, 'daily', 'stress_avg', i, JT.int(r.stress_avg)); }
   });
 
+  // Garmin training status: the word with a coloured dot, the two loads and the acute/chronic ratio bar.
+  const STATUS_TONE = { PRODUCTIVE: 'var(--color-ok)', PEAKING: 'var(--color-ok)', MAINTAINING: 'var(--cds-chart-muted)', RECOVERY: 'var(--cds-chart-muted)',
+    UNPRODUCTIVE: 'var(--color-warn)', DETRAINING: 'var(--color-warn)', OVERREACHING: 'var(--color-bad)', STRAINED: 'var(--color-bad)' };
   dash.draw('status-val', (el) => {
     const s = dash.data('status');
+    el.replaceChildren();
     if (s.status !== 'ok' || !s.data.length) { JT.empty(el, ['status']); return; }
-    el.textContent = JT.statusLabel(s.data[0].training_status);
+    const phrase = s.data[0].training_status;
+    const dot = document.createElement('span'); dot.className = 'jt-status-dot';
+    dot.style.background = STATUS_TONE[String(phrase || '').replace(/_\d+$/, '')] || 'var(--cds-chart-muted)';
+    el.append(dot, document.createTextNode(JT.statusLabel(phrase)));
   });
-  [['status-acute', 'acute_load', JT.int], ['status-chronic', 'chronic_load', JT.int], ['status-acwr', 'acwr', JT.dec1], ['status-vo2', 'vo2max', (v) => (Number.isInteger(v) ? JT.int(v) : JT.dec1(v))]].forEach(([name, field, fmt]) => {
+  [['status-acute', 'acute_load'], ['status-chronic', 'chronic_load']].forEach(([name, field]) => {
     dash.draw(name, (el) => {
       const s = dash.data('status');
       el.replaceChildren();
       if (s.status !== 'ok' || !s.data.length || s.data[0][field] == null) { el.textContent = '—'; return; }
-      JT.mark(el, 'status', field, 0, fmt(s.data[0][field]));
+      JT.mark(el, 'status', field, 0, JT.int(s.data[0][field]));
     });
+  });
+  dash.draw('load-week', (el) => {
+    const P = dash.data('pmc');
+    el.replaceChildren();
+    if (P.status !== 'ok' || !P.data || !P.data.length) { JT.empty(el, ['activities', 'daily']); return; }
+    const start = Math.max(0, P.data.length - 7);
+    const rows = P.data.slice(start);
+    const max = Math.max(1, ...rows.map((r) => r.load));
+    rows.forEach((r, i) => {
+      const col = document.createElement('div'); col.className = 'jt-wl-col';
+      const v = document.createElement('b');
+      if (r.load) { v.setAttribute('data-source', 'pmc'); v.setAttribute('data-field', 'load'); v.setAttribute('data-row', String(start + i)); v.textContent = JT.int(r.load); }
+      const bar = document.createElement('i'); bar.className = 'jt-wl-bar';
+      bar.style.height = `${Math.round((r.load / max) * 62)}px`;
+      bar.style.background = r.load ? dash.colors[1] : 'var(--cds-chart-grid)';
+      const d = JT.parse(r.date);
+      const lab = document.createElement('span'); lab.textContent = d ? JT.dow(d) : '';
+      col.title = `${JT.day(r.date)}: load ${JT.int(r.load)}`;
+      col.append(v, bar, lab);
+      el.appendChild(col);
+    });
+  });
+  const ACWR = { OPTIMAL: 'optimal', LOW: 'low', HIGH: 'high', VERY_HIGH: 'very high', NONE: '' };
+  dash.draw('status-acwr', (el) => {
+    const s = dash.data('status');
+    el.replaceChildren();
+    if (s.status !== 'ok' || !s.data.length || s.data[0].acwr == null) { el.textContent = '—'; return; }
+    JT.mark(el, 'status', 'acwr', 0, JT.dec1(s.data[0].acwr));
+    const word = ACWR[s.data[0].acwr_status] ?? String(s.data[0].acwr_status || '').toLowerCase().replace(/_/g, ' ');
+    if (word) el.appendChild(document.createTextNode(` · ${word}`));
+  });
+  dash.draw('acwr-bar', (el) => {
+    const s = dash.data('status');
+    el.replaceChildren();
+    if (s.status !== 'ok' || !s.data.length || s.data[0].acwr == null) return;
+    const v = s.data[0].acwr;
+    const pos = (x) => `${Math.max(0, Math.min(100, ((x - 0.5) / 1.5) * 100))}%`;
+    const band = document.createElement('i'); band.className = 'jt-acwr-band'; band.style.left = pos(0.8); band.style.width = `calc(${pos(1.3)} - ${pos(0.8)})`;
+    const mark = document.createElement('i'); mark.className = 'jt-acwr-mark'; mark.style.left = pos(v);
+    mark.style.background = v >= 0.8 && v <= 1.3 ? 'var(--color-ok)' : v > 1.5 ? 'var(--color-bad)' : 'var(--color-warn)';
+    mark.title = `Acute/chronic ratio ${JT.dec1(v)}`;
+    el.append(band, mark);
+  });
+
+  // VO2max: today's value from Garmin, the change over 6 months and a step chart from your runs.
+  const vo2fmt = (v) => (Number.isInteger(v) ? JT.int(v) : JT.dec1(v));
+  dash.draw('vo2-val', (el) => {
+    const s = dash.data('status');
+    const V = dash.data('vo2');
+    el.replaceChildren();
+    if (s.status === 'ok' && s.data.length && s.data[0].vo2max != null) JT.mark(el, 'status', 'vo2max', 0, vo2fmt(s.data[0].vo2max));
+    else if (V.status === 'ok' && V.data && V.data.length) JT.mark(el, 'vo2', 'vo2max', V.data.length - 1, vo2fmt(V.data[V.data.length - 1].vo2max));
+    else { JT.empty(el, ['status', 'activities']); return; }
+    const u = document.createElement('small'); u.textContent = 'ml/kg/min'; el.appendChild(u);
+  });
+  dash.draw('vo2-delta', (el) => {
+    const C = dash.data('vo2_change');
+    const V = dash.data('vo2');
+    el.replaceChildren();
+    el.classList.remove('is-up', 'is-down');
+    if (C.status !== 'ok' || C.data == null || V.status !== 'ok' || !V.data || V.data.length < 2) { el.textContent = ''; return; }
+    const c = C.data;
+    if (c > 0) el.classList.add('is-up'); else if (c < 0) el.classList.add('is-down');
+    el.appendChild(document.createTextNode(c > 0 ? '▲ ' : c < 0 ? '▼ ' : '= '));
+    const n = document.createElement('span'); n.setAttribute('data-source', 'vo2_change'); n.textContent = c > 0 ? `+${vo2fmt(c)}` : vo2fmt(c); el.appendChild(n);
+    el.appendChild(document.createTextNode(` since ${JT.day(V.data[0].date)}`));
+  });
+  dash.draw('vo2-chart', (el) => {
+    const V = dash.data('vo2');
+    if (V.status !== 'ok' || !V.data || V.data.length < 2) { el.replaceChildren(); if (V.status !== 'ok') JT.empty(el, ['activities']); return; }
+    const rows = V.data.map((r) => ({ ...r, d: JT.parse(r.date) }));
+    const { svg, w, h } = JT.svg(el, 100);
+    svg.attr('aria-label', 'VO2max from your runs over the last 6 months');
+    const m = { l: 26, r: 10, t: 8, b: 20 };
+    const x = d3.scaleUtc().domain(d3.extent(rows, (r) => r.d)).range([m.l, w - m.r]);
+    const ext = d3.extent(rows, (r) => r.vo2max);
+    const y = d3.scaleLinear().domain([ext[0] - 1, ext[1] + 1]).nice().range([h - m.b, m.t]);
+    svg.append('g').attr('transform', `translate(${m.l},0)`).call(d3.axisLeft(y).ticks(3).tickFormat(d3.format('d')).tickSize(-(w - m.l - m.r))).call((g) => g.select('.domain').remove());
+    svg.append('g').attr('transform', `translate(0,${h - m.b})`).call(d3.axisBottom(x).ticks(Math.max(2, Math.floor((w - m.l - m.r) / 70))).tickFormat((d) => JT.month(d)).tickSizeOuter(0));
+    const id = `jt-vo2-fill-${Math.round(w)}`;
+    const grad = svg.append('defs').append('linearGradient').attr('id', id).attr('x1', 0).attr('x2', 0).attr('y1', 0).attr('y2', 1);
+    grad.append('stop').attr('offset', '0%').style('stop-color', dash.colors[0]).style('stop-opacity', 0.35);
+    grad.append('stop').attr('offset', '100%').style('stop-color', dash.colors[0]).style('stop-opacity', 0);
+    svg.append('path').datum(rows).attr('d', d3.area().curve(d3.curveStepAfter).x((r) => x(r.d)).y0(h - m.b).y1((r) => y(r.vo2max))).style('fill', `url(#${id})`);
+    svg.append('path').datum(rows).attr('d', d3.line().curve(d3.curveStepAfter).x((r) => x(r.d)).y((r) => y(r.vo2max))).style('fill', 'none').style('stroke', dash.colors[0]).style('stroke-width', 2.2);
+    const last = rows[rows.length - 1];
+    svg.append('circle').attr('cx', x(last.d)).attr('cy', y(last.vo2max)).attr('r', 4).style('fill', dash.colors[0]);
+    const tip = JT.tip(el);
+    const bis = d3.bisector((r) => r.d).center;
+    svg.append('rect').attr('x', m.l).attr('y', m.t).attr('width', w - m.l - m.r).attr('height', h - m.t - m.b).style('fill', 'transparent')
+      .on('pointermove pointerdown', (ev) => {
+        const [px] = d3.pointer(ev);
+        const r = rows[bis(rows, x.invert(px))];
+        tip.show((x(r.d) / w) * el.clientWidth, 10, JT.day(r.date), [['VO2max', vo2fmt(r.vo2max)]]);
+      })
+      .on('pointerleave', () => tip.hide());
   });
 </script>
 
