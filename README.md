@@ -38,13 +38,24 @@ Your data stays in your own accounts: Garmin, Google Drive and Claude. The proje
 
 ### 1. On your laptop (once, about 5 minutes)
 
+1. Open **PowerShell**: press Start, type `PowerShell` and press Enter. A normal window is fine, you don't need administrator rights.
+2. Paste this command and press Enter:
+   ```powershell
+   powershell -ExecutionPolicy Bypass -c "irm https://raw.githubusercontent.com/alexandrubancioiu/garmin-dashboard/main/install.ps1 | iex"
+   ```
+   It downloads the latest version of this project into a temporary folder and runs [`setup.ps1`](setup.ps1) from it. You can read [`install.ps1`](install.ps1) first: it is a few lines long.
+3. When asked, enter your Garmin Connect email and password and, if you use two-step verification, the code Garmin sends you. Your password is not stored anywhere: only the session tokens are kept, in `%USERPROFILE%\.garminconnect`, and they last about 6 months.
+
+<details>
+<summary>Prefer to download it yourself?</summary>
+
 1. At the top of this page: **Code → Download ZIP**, then extract the folder.
 2. Open the extracted folder, type `powershell` in File Explorer's address bar and press Enter.
 3. Run:
    ```powershell
    powershell -ExecutionPolicy Bypass -File .\setup.ps1
    ```
-4. When asked, enter your Garmin Connect email and password and, if you use two-step verification, the code Garmin sends you. Your password is not stored anywhere: only the session tokens are kept, in `%USERPROFILE%\.garminconnect`, and they last about 6 months.
+</details>
 
 When it finishes, Google Drive has a `My Drive\garmin-dashboard` folder with three files, and Windows runs the export by itself at 07:12 and then every 3 hours, with no window. If the laptop was off at the scheduled time, the export runs as soon as you turn it on.
 
@@ -71,6 +82,8 @@ That's it. From then on the dashboard shows the data from the latest export, on 
 **My watch has no Training Readiness.** The dashboard then shows its own estimate and says so on the card. The formula is explained at the bottom of the dashboard, under "How the numbers are worked out".
 
 **I want to change something on the dashboard.** Tell Claude what you want ("add a chart of kilometres per month", "make the cards bigger", "translate the dashboard to Spanish") and it changes it.
+
+**How do I update to the latest version?** Run the install command from step 1 again. It replaces the scripts with the newest ones and keeps your Garmin login, your data and the schedule.
 
 **How do I stop the automatic export?** Open **Task Scheduler**, find **Garmin dashboard export** and choose **Disable** or **Delete**. To remove everything, then delete the `%USERPROFILE%\garmin-dashboard` folder and the folder in Google Drive.
 
