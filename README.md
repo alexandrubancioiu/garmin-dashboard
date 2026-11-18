@@ -2,8 +2,6 @@
 
 A TrainingPeaks-style training dashboard built from your Garmin Connect data. It updates itself several times a day and opens in Claude, on your computer and on your phone.
 
-*Rezumat în română mai jos.*
-
 ![The Training Log dashboard: readiness, sleep, HRV, resting heart rate, Body Battery, Garmin training status and the fitness, fatigue and form chart](docs/dashboard.png)
 
 ![The 4-week training calendar with every session's duration, distance and load](docs/calendar.png)
@@ -97,13 +95,3 @@ The project is free and open source. If it's useful to you and you'd like to sup
 ## License
 
 [MIT](LICENSE)
-
----
-
-## Rezumat în română
-
-Un panou de antrenament în stilul TrainingPeaks pentru ceasurile Garmin, construit în Claude. Un script mic de pe laptopul tău cu Windows exportă datele din Garmin Connect (activități, somn, HRV, puls în repaus, Body Battery, status de antrenament, Training Readiness unde ceasul îl are) în Google Drive, din 3 în 3 ore. Panoul din Claude citește fișierele direct din Google Drive, pe calculator și pe telefon.
-
-**Instalare:** descarcă ZIP-ul, rulează `powershell -ExecutionPolicy Bypass -File .\setup.ps1` și loghează-te în Garmin când ți se cere. Apoi fă un fork al acestui proiect, deschide-l în [claude.ai/code](https://claude.ai/code) și scrie „fă-mi panoul Garmin”. Textul panoului e în engleză; îi poți cere lui Claude să-l traducă în română.
-
-Ai nevoie de Windows 10/11, Google Drive pentru desktop și un abonament Claude cu Claude Code și conectorul Google Drive. Dacă vrei să susții proiectul: [revolut.me/alexz4ai5](https://revolut.me/alexz4ai5). Folosește biblioteca neoficială python-garminconnect: proiectul nu e afiliat cu Garmin și îl folosești pe propria răspundere. Licență MIT.
