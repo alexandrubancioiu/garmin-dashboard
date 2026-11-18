@@ -80,7 +80,7 @@ That's it. From then on the dashboard shows the data from the latest export, on 
 
 ## Support the project
 
-The project is free and open source. If it's useful to you and you'd like to support it, a donation link will appear here soon.
+The project is free and open source. If it's useful to you and you'd like to support it, you can send a donation on Revolut: **[revolut.me/alexz4ai5](https://revolut.me/alexz4ai5)** (no Revolut account needed, a card works too). Thank you!
 
 ## Thanks
 
@@ -100,4 +100,4 @@ Un panou de antrenament în stilul TrainingPeaks pentru ceasurile Garmin, constr
 
 **Instalare:** descarcă ZIP-ul, rulează `powershell -ExecutionPolicy Bypass -File .\setup.ps1` și loghează-te în Garmin când ți se cere. Apoi fă un fork al acestui proiect, deschide-l în [claude.ai/code](https://claude.ai/code) și scrie „fă-mi panoul Garmin”. Textul panoului e în engleză; îi poți cere lui Claude să-l traducă în română.
 
-Ai nevoie de Windows 10/11, Google Drive pentru desktop și un abonament Claude cu Claude Code și conectorul Google Drive. Folosește biblioteca neoficială python-garminconnect: proiectul nu e afiliat cu Garmin și îl folosești pe propria răspundere. Licență MIT.
+Ai nevoie de Windows 10/11, Google Drive pentru desktop și un abonament Claude cu Claude Code și conectorul Google Drive. Dacă vrei să susții proiectul: [revolut.me/alexz4ai5](https://revolut.me/alexz4ai5). Folosește biblioteca neoficială python-garminconnect: proiectul nu e afiliat cu Garmin și îl folosești pe propria răspundere. Licență MIT.
