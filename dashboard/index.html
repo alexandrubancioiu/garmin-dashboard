@@ -774,7 +774,7 @@
     if (s.status !== 'ok' || !s.data.length) { JT.empty(el, ['status']); return; }
     el.textContent = JT.statusLabel(s.data[0].training_status);
   });
-  [['status-acute', 'acute_load', JT.int], ['status-chronic', 'chronic_load', JT.int], ['status-acwr', 'acwr', JT.dec1], ['status-vo2', 'vo2max', JT.int]].forEach(([name, field, fmt]) => {
+  [['status-acute', 'acute_load', JT.int], ['status-chronic', 'chronic_load', JT.int], ['status-acwr', 'acwr', JT.dec1], ['status-vo2', 'vo2max', (v) => (Number.isInteger(v) ? JT.int(v) : JT.dec1(v))]].forEach(([name, field, fmt]) => {
     dash.draw(name, (el) => {
       const s = dash.data('status');
       el.replaceChildren();
@@ -811,7 +811,7 @@
     const tsbExt = d3.extent(rows, (r) => r.tsb);
     const yBot = d3.scaleLinear().domain([Math.min(-5, tsbExt[0]), Math.max(5, tsbExt[1])]).nice().range([botTop + botH, botTop]);
     const ticks = Math.max(2, Math.floor((w - m.l - m.r) / 90));
-    svg.append('g').attr('transform', `translate(0,${botTop + botH})`).call(d3.axisBottom(x).ticks(ticks).tickFormat((d) => `${d.getUTCDate()} ${JT.month(d)}`).tickSizeOuter(0));
+    svg.append('g').attr('transform', `translate(0,${botTop + botH})`).call(d3.axisBottom(x).ticks(ticks).tickFormat((d) => `${JT.month(d)} ${d.getUTCDate()}`).tickSizeOuter(0));
     svg.append('g').attr('transform', `translate(${m.l},0)`).call(d3.axisLeft(yTop).ticks(4).tickSize(-(w - m.l - m.r))).call((g) => g.select('.domain').remove());
     const botTicks = [...new Set([yBot.domain()[0], 0, yBot.domain()[1]])];
     svg.append('g').attr('transform', `translate(${m.l},0)`).call(d3.axisLeft(yBot).tickValues(botTicks).tickFormat((v) => JT.signed(v)).tickSize(-(w - m.l - m.r))).call((g) => g.select('.domain').remove());
@@ -879,7 +879,7 @@
     const ys = d3.scaleLinear().domain([0, 100]).range([h - m.b, m.t]);
     svg.append('g').attr('transform', `translate(${m.l},0)`).call(d3.axisLeft(y).ticks(4).tickSize(-(w - m.l - m.r))).call((g) => g.select('.domain').remove());
     svg.append('g').attr('transform', `translate(${w - m.r},0)`).call(d3.axisRight(ys).ticks(2).tickSize(0)).call((g) => g.select('.domain').remove());
-    svg.append('g').attr('transform', `translate(0,${h - m.b})`).call(d3.axisBottom(x).ticks(Math.max(2, Math.floor((w - m.l - m.r) / 80))).tickFormat((d) => `${d.getUTCDate()} ${JT.month(d)}`).tickSizeOuter(0));
+    svg.append('g').attr('transform', `translate(0,${h - m.b})`).call(d3.axisBottom(x).ticks(Math.max(2, Math.floor((w - m.l - m.r) / 80))).tickFormat((d) => `${JT.month(d)} ${d.getUTCDate()}`).tickSizeOuter(0));
     const bw = Math.max(2, (w - m.l - m.r) / rows.length - 2);
     svg.append('g').selectAll('rect').data(rows.filter((r) => r.sleep_score != null)).join('rect')
       .attr('x', (r) => x(r.d) - bw / 2).attr('width', bw).attr('y', (r) => ys(r.sleep_score)).attr('height', (r) => ys(0) - ys(r.sleep_score))
@@ -967,7 +967,7 @@
           if (day.future) c.classList.add('is-out');
           if (day.key === JT.iso(end)) c.classList.add('is-today');
           const top = document.createElement('div'); top.className = 'jt-day-n';
-          const dn = document.createElement('span'); dn.textContent = day.d.getUTCDate() === 1 || day === wk.days[0] ? `${day.d.getUTCDate()} ${JT.month(day.d)}` : String(day.d.getUTCDate());
+          const dn = document.createElement('span'); dn.textContent = day.d.getUTCDate() === 1 || day === wk.days[0] ? `${JT.month(day.d)} ${day.d.getUTCDate()}` : String(day.d.getUTCDate());
           top.appendChild(dn);
           const L = d3.sum(day.acts, (a) => a.load || 0);
           if (L) { const l = document.createElement('span'); l.textContent = JT.int(L); l.title = 'Training load al zilei'; top.appendChild(l); }

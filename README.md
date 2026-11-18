@@ -4,6 +4,12 @@ A TrainingPeaks-style training dashboard built from your Garmin Connect data. It
 
 *Rezumat în română mai jos.*
 
+![The Training Log dashboard: readiness, sleep, HRV, resting heart rate, Body Battery, Garmin training status and the fitness, fatigue and form chart](docs/dashboard.png)
+
+![The 4-week training calendar with every session's duration, distance and load](docs/calendar.png)
+
+<sub>Screenshots show invented sample data, not a real athlete.</sub>
+
 ## What's on the dashboard
 
 - **Today's readiness**: Garmin's Training Readiness score if your watch computes it, otherwise the dashboard's own estimate from sleep, HRV, Body Battery, resting heart rate and form, with how much each one contributes.
