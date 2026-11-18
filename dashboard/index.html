@@ -12,7 +12,7 @@
   .jt-card { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-lg); min-width: 0; }
 
   /* Today */
-  .jt-today { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--cds-gap-md); }
+  .jt-today { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: var(--cds-gap-md); }
   @container (max-width: 760px) { .jt-today { grid-template-columns: minmax(0, 1fr); } }
   @media (max-width: 760px) { .jt-today { grid-template-columns: minmax(0, 1fr); } }
   .jt-ready { display: flex; flex-direction: column; gap: var(--cds-gap-md); }
@@ -34,13 +34,13 @@
   .jt-comp-bar i { display: block; height: 100%; border-radius: 3px; }
   .jt-comp-val { text-align: right; font-variant-numeric: tabular-nums; font-weight: var(--cds-font-weight-medium); }
 
-  .jt-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: var(--cds-gap-md); }
+  .jt-tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--cds-gap-md); }
   .jt-tile { display: flex; flex-direction: column; gap: 4px; }
   .jt-big { margin: 0; font-family: var(--font-anthropic-serif); font-weight: 400; font-size: 2rem; line-height: 1.1; font-variant-numeric: tabular-nums; }
   .jt-big small { font-family: var(--font-anthropic-sans); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); margin-left: 4px; }
   .jt-sub { margin: 0; font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); font-variant-numeric: tabular-nums; min-height: 1.3em; }
-  .jt-spark { height: 34px; margin-top: auto; }
-  .jt-duo { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)); gap: var(--cds-gap-md); }
+  .jt-spark { height: 44px; margin-top: auto; }
+  .jt-duo { display: grid; grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)); gap: var(--cds-gap-md); }
   .jt-status, .jt-vo2 { display: flex; flex-direction: column; gap: var(--cds-gap-sm); min-width: 0; }
   .jt-status-word { margin: 0; display: flex; align-items: center; gap: 10px; font-family: var(--font-anthropic-serif); font-weight: 400; font-size: 2rem; line-height: 1.15; overflow-wrap: anywhere; }
   .jt-status-dot { flex: none; width: 12px; height: 12px; border-radius: 50%; }
@@ -61,14 +61,14 @@
   .jt-vo2-delta { margin: 0; font-size: var(--cds-font-size-body); font-weight: var(--cds-font-weight-medium); font-variant-numeric: tabular-nums; color: var(--color-fg-muted); }
   .jt-vo2-delta.is-up { color: var(--color-ok); }
   .jt-vo2-delta.is-down { color: var(--color-bad); }
-  .jt-chart.jt-vo2-chart { min-height: 100px; }
+  .jt-chart.jt-vo2-chart { min-height: 170px; }
   .jt-week-load { display: flex; flex-direction: column; gap: 6px; }
   .jt-week-chart { display: flex; align-items: flex-end; gap: 6px; height: 96px; }
   .jt-wl-col { flex: 1 1 0; min-width: 0; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 3px; font-size: 11px; color: var(--color-fg-muted); font-variant-numeric: tabular-nums; }
   .jt-wl-col b { color: var(--color-fg); font-weight: var(--cds-font-weight-medium); }
   .jt-wl-bar { width: 100%; max-width: 28px; min-height: 2px; border-radius: 4px 4px 2px 2px; }
   .jt-vo2-chart svg { display: block; width: 100%; overflow: visible; }
-  .jt-spark svg { display: block; width: 100%; height: 34px; overflow: visible; }
+  .jt-spark svg { display: block; width: 100%; height: 44px; overflow: visible; }
 
   /* Charts */
   .jt-chart { position: relative; min-height: 220px; width: 100%; }
@@ -176,35 +176,35 @@
           <p class="jt-sub" data-draw="bb-sub">—</p>
           <div class="jt-spark" data-draw="bb-spark" data-source="daily"></div>
         </article>
-        <div class="jt-duo">
-          <article class="jt-card jt-vo2" id="vo2max">
-            <h3 class="jt-label">VO2max</h3>
-            <div class="jt-vo2-main">
-              <p class="jt-vo2-val" data-draw="vo2-val">—</p>
-              <p class="jt-vo2-delta" data-draw="vo2-delta">—</p>
-            </div>
-            <div class="jt-chart jt-vo2-chart" id="chart-vo2max" data-draw="vo2-chart" data-source="vo2"></div>
-            <p class="jt-note">Garmin estimates VO2max from the pace and heart rate of your runs. The line shows it over the last 6 months.</p>
-          </article>
-          <article class="jt-card jt-status" id="status-garmin">
-            <h3 class="jt-label">Garmin training status</h3>
-            <p class="jt-status-word" data-draw="status-val">—</p>
-            <dl class="jt-status-stats">
-              <div><dt>Acute load (7 days)</dt><dd data-draw="status-acute">—</dd></div>
-              <div><dt>Chronic load (28 days)</dt><dd data-draw="status-chronic">—</dd></div>
-            </dl>
-            <div class="jt-week-load">
-              <div class="jt-acwr-head"><span>Training load, last 7 days</span></div>
-              <div class="jt-week-chart" id="chart-week-load" data-draw="load-week" data-source="pmc"></div>
-            </div>
-            <div class="jt-acwr">
-              <div class="jt-acwr-head"><span>Acute/chronic ratio</span><b data-draw="status-acwr">—</b></div>
-              <div class="jt-acwr-bar" data-draw="acwr-bar" data-source="status"></div>
-              <div class="jt-acwr-scale"><span>0.5</span><span>optimal 0.8–1.3</span><span>2.0</span></div>
-            </div>
-          </article>
-        </div>
       </div>
+    </div>
+    <div class="jt-duo">
+      <article class="jt-card jt-vo2" id="vo2max">
+        <h3 class="jt-label">VO2max</h3>
+        <div class="jt-vo2-main">
+          <p class="jt-vo2-val" data-draw="vo2-val">—</p>
+          <p class="jt-vo2-delta" data-draw="vo2-delta">—</p>
+        </div>
+        <div class="jt-chart jt-vo2-chart" id="chart-vo2max" data-draw="vo2-chart" data-source="vo2"></div>
+        <p class="jt-note">Garmin estimates VO2max from the pace and heart rate of your runs. The line shows it over the last 6 months.</p>
+      </article>
+      <article class="jt-card jt-status" id="status-garmin">
+        <h3 class="jt-label">Garmin training status</h3>
+        <p class="jt-status-word" data-draw="status-val">—</p>
+        <dl class="jt-status-stats">
+          <div><dt>Acute load (7 days)</dt><dd data-draw="status-acute">—</dd></div>
+          <div><dt>Chronic load (28 days)</dt><dd data-draw="status-chronic">—</dd></div>
+        </dl>
+        <div class="jt-week-load">
+          <div class="jt-acwr-head"><span>Training load, last 7 days</span></div>
+          <div class="jt-week-chart" id="chart-week-load" data-draw="load-week" data-source="pmc"></div>
+        </div>
+        <div class="jt-acwr">
+          <div class="jt-acwr-head"><span>Acute/chronic ratio</span><b data-draw="status-acwr">—</b></div>
+          <div class="jt-acwr-bar" data-draw="acwr-bar" data-source="status"></div>
+          <div class="jt-acwr-scale"><span>0.5</span><span>optimal 0.8–1.3</span><span>2.0</span></div>
+        </div>
+      </article>
     </div>
   </section>
 
@@ -783,7 +783,7 @@
       if (d.status !== 'ok') return;
       const rows = d.data.slice(0, 14).filter((r) => r[field] != null).reverse();
       if (rows.length < 2) return;
-      const w = Math.max(100, el.clientWidth || 160); const h = 34;
+      const w = Math.max(100, el.clientWidth || 160); const h = 44;
       const x = d3.scaleUtc().domain(d3.extent(rows, (r) => JT.parse(r.date))).range([3, w - 3]);
       const ext = d3.extent(rows, (r) => r[field]);
       const pad = (ext[1] - ext[0]) * 0.15 || 2;
@@ -916,7 +916,7 @@
     const V = dash.data('vo2');
     if (V.status !== 'ok' || !V.data || V.data.length < 2) { el.replaceChildren(); if (V.status !== 'ok') JT.empty(el, ['activities']); return; }
     const rows = V.data.map((r) => ({ ...r, d: JT.parse(r.date) }));
-    const { svg, w, h } = JT.svg(el, 100);
+    const { svg, w, h } = JT.svg(el, 170);
     svg.attr('aria-label', 'VO2max from your runs over the last 6 months');
     const m = { l: 26, r: 10, t: 8, b: 20 };
     const x = d3.scaleUtc().domain(d3.extent(rows, (r) => r.d)).range([m.l, w - m.r]);
