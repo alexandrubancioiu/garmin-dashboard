@@ -1,0 +1,36 @@
+{
+  "dash/meta": {
+    "title": "Training Log",
+    "lang": "en"
+  },
+  "datasets/activities": {
+    "title": "Garmin activities",
+    "description": "activities.json in Google Drive (My Drive/garmin-dashboard), written by garmin_export.py: activities from the last 180 days.",
+    "source": {
+      "kind": "call",
+      "connector": "Google Drive",
+      "tool": "download_file_content",
+      "args": { "fileId": "ACTIVITIES_FILE_ID" }
+    }
+  },
+  "datasets/daily": {
+    "title": "Garmin daily values",
+    "description": "daily.json in Google Drive (My Drive/garmin-dashboard), written by garmin_export.py: sleep, HRV, resting heart rate, stress, Body Battery and Training Readiness for 42 days.",
+    "source": {
+      "kind": "call",
+      "connector": "Google Drive",
+      "tool": "download_file_content",
+      "args": { "fileId": "DAILY_FILE_ID" }
+    }
+  },
+  "datasets/status": {
+    "title": "Garmin training status",
+    "description": "status.json in Google Drive (My Drive/garmin-dashboard), written by garmin_export.py: training status, acute and chronic load and VO2max.",
+    "source": {
+      "kind": "call",
+      "connector": "Google Drive",
+      "tool": "download_file_content",
+      "args": { "fileId": "STATUS_FILE_ID" }
+    }
+  }
+}

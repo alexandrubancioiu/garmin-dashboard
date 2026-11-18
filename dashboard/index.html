@@ -1,0 +1,1095 @@
+<meta name="dash-one-writer">
+<style>
+  .jt { display: flex; flex-direction: column; gap: var(--cds-gap-xl); font-family: var(--font-anthropic-sans); color: var(--color-fg); }
+  .jt-head { display: flex; flex-direction: column; gap: var(--cds-gap-sm); }
+  .jt-title { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: var(--cds-font-size-title); margin: 0; text-wrap: balance; }
+  .jt-lede { margin: 0; font-size: var(--cds-font-size-body); line-height: 1.55; max-width: 68ch; color: var(--color-fg); }
+  .jt-lede b { font-variant-numeric: tabular-nums; }
+  .jt-h2 { font-size: var(--cds-font-size-heading); font-weight: var(--cds-font-weight-medium); margin: 0; text-wrap: balance; }
+  .jt-desc { margin: 0; color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); line-height: 1.5; max-width: 72ch; }
+  .jt-label { margin: 0; font-size: var(--cds-font-size-caption); font-weight: var(--cds-font-weight-medium); color: var(--color-fg-muted); text-transform: uppercase; letter-spacing: 0.06em; }
+  .jt-section { display: flex; flex-direction: column; gap: var(--cds-gap-md); min-width: 0; }
+  .jt-card { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-lg); min-width: 0; }
+
+  /* Today */
+  .jt-today { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--cds-gap-md); }
+  @container (max-width: 760px) { .jt-today { grid-template-columns: minmax(0, 1fr); } }
+  @media (max-width: 760px) { .jt-today { grid-template-columns: minmax(0, 1fr); } }
+  .jt-ready { display: flex; flex-direction: column; gap: var(--cds-gap-md); }
+  .jt-ready-main { display: flex; gap: var(--cds-gap-lg); align-items: center; flex-wrap: wrap; }
+  .jt-gauge { width: 168px; max-width: 100%; min-height: 104px; position: relative; }
+  .jt-gauge svg { display: block; width: 100%; height: auto; }
+  .jt-ready-side { display: flex; flex-direction: column; gap: var(--cds-gap-sm); flex: 1 1 160px; min-width: 0; }
+  .jt-chip { display: inline-flex; align-self: flex-start; align-items: center; gap: 6px; margin: 0; padding: 3px 10px; border-radius: 999px; font-size: var(--cds-font-size-caption); font-weight: var(--cds-font-weight-medium); border: 1px solid var(--color-border-line); }
+  .jt-chip::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+  .jt-chip.is-ok { color: var(--color-ok); }
+  .jt-chip.is-warn { color: var(--color-warn); }
+  .jt-chip.is-bad { color: var(--color-bad); }
+  .jt-note { margin: 0; color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); line-height: 1.45; }
+  .jt-comps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+  .jt-comp { display: grid; grid-template-columns: 7.5rem minmax(0, 1fr) 2.2rem; gap: var(--cds-gap-sm); align-items: center; font-size: var(--cds-font-size-caption); }
+  .jt-comp-name { display: flex; flex-direction: column; min-width: 0; }
+  .jt-comp-name small { color: var(--color-fg-muted); font-size: inherit; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .jt-comp-bar { height: 6px; border-radius: 3px; background: var(--cds-chart-grid); overflow: hidden; }
+  .jt-comp-bar i { display: block; height: 100%; border-radius: 3px; }
+  .jt-comp-val { text-align: right; font-variant-numeric: tabular-nums; font-weight: var(--cds-font-weight-medium); }
+
+  .jt-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: var(--cds-gap-md); }
+  .jt-tile { display: flex; flex-direction: column; gap: 4px; }
+  .jt-big { margin: 0; font-family: var(--font-anthropic-serif); font-weight: 400; font-size: 2rem; line-height: 1.1; font-variant-numeric: tabular-nums; }
+  .jt-big small { font-family: var(--font-anthropic-sans); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); margin-left: 4px; }
+  .jt-sub { margin: 0; font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); font-variant-numeric: tabular-nums; min-height: 1.3em; }
+  .jt-spark { height: 34px; margin-top: auto; }
+  .jt-status { grid-column: 1 / -1; flex-direction: row; flex-wrap: wrap; align-items: center; gap: var(--cds-gap-md) var(--cds-gap-xl); }
+  .jt-status-main { display: flex; flex-direction: column; gap: 4px; min-width: 0; flex: 0 1 auto; }
+  .jt-big-word { font-size: 1.75rem; overflow-wrap: anywhere; }
+  .jt-status-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(6rem, 1fr)); gap: var(--cds-gap-md); margin: 0; flex: 1 1 22rem; min-width: 0; }
+  .jt-status-stats > div { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .jt-status-stats dt { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+  .jt-status-stats dd { margin: 0; font-family: var(--font-anthropic-serif); font-size: 1.4rem; line-height: 1.2; font-variant-numeric: tabular-nums; }
+  .jt-spark svg { display: block; width: 100%; height: 34px; overflow: visible; }
+
+  /* Charts */
+  .jt-chart { position: relative; min-height: 220px; width: 100%; }
+  .jt-chart.is-short { min-height: 180px; }
+  .jt-chart svg { display: block; width: 100%; overflow: visible; }
+  .jt-chart .tick text, .jt-axis-label { fill: var(--cds-text-secondary); font-size: var(--cds-font-size-caption); font-family: var(--font-anthropic-sans); }
+  .jt-chart .tick line { stroke: var(--cds-chart-grid); }
+  .jt-chart .domain { stroke: var(--cds-chart-axis); }
+  .jt-legend { display: flex; flex-wrap: wrap; gap: 6px 16px; margin: 0; padding: 0; list-style: none; font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+  .jt-legend li { display: inline-flex; align-items: center; gap: 6px; }
+  .jt-key { width: 14px; height: 3px; border-radius: 2px; display: inline-block; }
+  .jt-key.is-dot { width: 9px; height: 9px; border-radius: 50%; }
+  .jt-key.is-bar { width: 10px; height: 10px; border-radius: 2px; }
+  .jt-grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--cds-gap-md); }
+  .jt-tip { position: absolute; pointer-events: none; z-index: 5; background: var(--cds-surface-popover); border: 1px solid var(--cds-border); box-shadow: var(--cds-shadow-popover); border-radius: var(--cds-radius); padding: 8px 10px; font-size: var(--cds-font-size-caption); line-height: 1.45; min-width: 140px; max-width: 240px; color: var(--color-fg); }
+  .jt-tip b { font-weight: var(--cds-font-weight-medium); }
+  .jt-tip-row { display: flex; justify-content: space-between; gap: 12px; font-variant-numeric: tabular-nums; }
+  .jt-tip-row span:first-child { color: var(--cds-text-secondary); }
+  .jt-failed { color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); padding: var(--cds-pad-md) 0; }
+
+  /* Calendar */
+  .jt-cal { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)) minmax(0, 1.15fr); gap: 4px; font-size: var(--cds-font-size-caption); }
+  .jt-cal-h { color: var(--color-fg-muted); font-weight: var(--cds-font-weight-medium); padding: 2px 6px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .jt-day { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: 6px; min-height: 92px; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+  .jt-day.is-out { opacity: 0.45; }
+  .jt-day.is-today { border-color: var(--color-fg); }
+  .jt-day-n { display: flex; justify-content: space-between; color: var(--color-fg-muted); font-variant-numeric: tabular-nums; }
+  .jt-act { border-left: 3px solid; padding: 2px 0 2px 6px; display: flex; flex-direction: column; min-width: 0; }
+  .jt-act-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: var(--cds-font-weight-medium); }
+  .jt-act-meta { color: var(--color-fg-muted); font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .jt-act-load { font-variant-numeric: tabular-nums; font-weight: var(--cds-font-weight-medium); white-space: nowrap; }
+  .jt-wk { background: transparent; border: 1px dashed var(--color-border-line); border-radius: var(--cds-radius); padding: 6px 8px; display: flex; flex-direction: column; gap: 2px; font-variant-numeric: tabular-nums; min-width: 0; }
+  .jt-wk b { font-size: var(--cds-font-size-body); font-weight: var(--cds-font-weight-medium); }
+  .jt-wk span { color: var(--color-fg-muted); }
+  .jt-callist { display: flex; flex-direction: column; gap: var(--cds-gap-md); font-size: var(--cds-font-size-caption); }
+  .jt-callist-week { display: flex; flex-direction: column; gap: 6px; }
+  .jt-callist-head { display: flex; justify-content: space-between; gap: 8px; color: var(--color-fg-muted); font-variant-numeric: tabular-nums; border-bottom: 1px solid var(--color-border-line); padding-bottom: 4px; }
+  .jt-callist-day { display: grid; grid-template-columns: 3.4rem minmax(0, 1fr); gap: 8px; align-items: start; }
+  .jt-callist-day > span { color: var(--color-fg-muted); font-variant-numeric: tabular-nums; padding-top: 2px; }
+  .jt-callist-day > div { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+
+  /* Table */
+  .jt-tablewrap { overflow-x: auto; }
+  .jt-table { width: 100%; border-collapse: collapse; font-size: var(--cds-font-size-caption); font-variant-numeric: tabular-nums; }
+  .jt-table th { text-align: left; font-weight: var(--cds-font-weight-medium); color: var(--color-fg-muted); padding: 6px 10px; border-bottom: 1px solid var(--color-border-line); white-space: nowrap; }
+  .jt-table td { padding: 7px 10px; border-bottom: 1px solid var(--color-border-line); white-space: nowrap; }
+  .jt-table td.num, .jt-table th.num { text-align: right; }
+  .jt-table td.name { white-space: normal; min-width: 10rem; }
+  .jt-sport { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+
+  .jt-defs { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); line-height: 1.55; }
+  .jt-defs summary { cursor: pointer; color: var(--color-fg); font-weight: var(--cds-font-weight-medium); }
+  .jt-defs dl { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; margin: var(--cds-gap-md) 0 0; max-width: 72ch; }
+  .jt-defs dt { color: var(--color-fg); font-weight: var(--cds-font-weight-medium); }
+  .jt-defs dd { margin: 2px 0 0; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .jt-comp-bar i { transition: width var(--cds-dur-slow) var(--cds-ease-out); }
+  }
+</style>
+
+<div class="jt">
+  <header class="jt-head" id="summary">
+    <h1 class="jt-title">Training Log</h1>
+    <p class="jt-lede"><span data-draw="lede-date">—</span>: readiness <b data-draw="lede-ready">—</b>, <span data-draw="lede-level">—</span>. Form is <b data-draw="lede-tsb">—</b> and Garmin rates your training status as <b data-draw="lede-status">—</b>.</p>
+  </header>
+
+  <section class="jt-section" id="today" aria-label="Today">
+    <div class="jt-today">
+      <article class="jt-card jt-ready" id="readiness">
+        <h2 class="jt-label">Readiness</h2>
+        <div class="jt-ready-main">
+          <div class="jt-gauge" data-draw="gauge" data-source="readiness"></div>
+          <div class="jt-ready-side">
+            <p class="jt-chip" data-draw="ready-level">—</p>
+            <p class="jt-note" data-when="estimate">The dashboard's own estimate from sleep, HRV, Body Battery, resting heart rate and form, because your watch doesn't report Training Readiness. It is not Garmin's score.</p>
+            <p class="jt-note" data-when="garmin" hidden>Garmin's Training Readiness score. The components below are the dashboard's own estimate, for comparison.</p>
+          </div>
+        </div>
+        <ul class="jt-comps" data-draw="comps" data-source="readiness daily pmc"></ul>
+      </article>
+
+      <div class="jt-tiles">
+        <article class="jt-card jt-tile" id="sleep">
+          <h3 class="jt-label">Sleep</h3>
+          <p class="jt-big" data-draw="sleep-val">—</p>
+          <p class="jt-sub" data-draw="sleep-sub">—</p>
+          <div class="jt-spark" data-draw="sleep-spark" data-source="daily"></div>
+        </article>
+        <article class="jt-card jt-tile" id="hrv">
+          <h3 class="jt-label">Overnight HRV</h3>
+          <p class="jt-big" data-draw="hrv-val">—</p>
+          <p class="jt-sub" data-draw="hrv-sub">—</p>
+          <div class="jt-spark" data-draw="hrv-spark" data-source="daily"></div>
+        </article>
+        <article class="jt-card jt-tile" id="resting-hr">
+          <h3 class="jt-label">Resting heart rate</h3>
+          <p class="jt-big" data-draw="rhr-val">—</p>
+          <p class="jt-sub" data-draw="rhr-sub">—</p>
+          <div class="jt-spark" data-draw="rhr-spark" data-source="daily"></div>
+        </article>
+        <article class="jt-card jt-tile" id="body-battery">
+          <h3 class="jt-label">Body Battery</h3>
+          <p class="jt-big" data-draw="bb-val">—</p>
+          <p class="jt-sub" data-draw="bb-sub">—</p>
+          <div class="jt-spark" data-draw="bb-spark" data-source="daily"></div>
+        </article>
+        <article class="jt-card jt-tile jt-status" id="status-garmin">
+          <div class="jt-status-main">
+            <h3 class="jt-label">Garmin training status</h3>
+            <p class="jt-big jt-big-word" data-draw="status-val">—</p>
+          </div>
+          <dl class="jt-status-stats">
+            <div><dt>Acute load</dt><dd data-draw="status-acute">—</dd></div>
+            <div><dt>Chronic load</dt><dd data-draw="status-chronic">—</dd></div>
+            <div><dt>Acute/chronic ratio</dt><dd data-draw="status-acwr">—</dd></div>
+            <div><dt>VO2max</dt><dd data-draw="status-vo2">—</dd></div>
+          </dl>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="jt-section" id="form">
+    <h2 class="jt-h2">Fitness, fatigue and form</h2>
+    <p class="jt-desc">Worked out each day from the Garmin training load of every activity, last 120 days. Fitness rises slowly with consistent training, fatigue reacts to the last week, and form is the difference between them.</p>
+    <ul class="jt-legend">
+      <li><i class="jt-key" data-draw="key-ctl"></i>Fitness (42 days)</li>
+      <li><i class="jt-key" data-draw="key-atl"></i>Fatigue (7 days)</li>
+      <li><i class="jt-key is-bar" data-draw="key-tsb"></i>Form (fitness minus fatigue)</li>
+    </ul>
+    <div class="jt-card"><div class="jt-chart" id="chart-form" data-draw="pmc" data-source="pmc"></div></div>
+  </section>
+
+  <section class="jt-section" id="trends">
+    <h2 class="jt-h2">Last 6 weeks</h2>
+    <div class="jt-grid2">
+      <div class="jt-card jt-section">
+        <h3 class="jt-label">Readiness by day</h3>
+        <ul class="jt-legend">
+          <li><i class="jt-key is-bar jt-k-ok"></i>Ready (75+)</li>
+          <li><i class="jt-key is-bar jt-k-warn"></i>Moderate (55–74)</li>
+          <li><i class="jt-key is-bar jt-k-bad"></i>Recovery (under 55)</li>
+        </ul>
+        <div class="jt-chart is-short" id="chart-readiness" data-draw="ready-trend" data-source="readiness"></div>
+      </div>
+      <div class="jt-card jt-section">
+        <h3 class="jt-label">HRV and sleep</h3>
+        <ul class="jt-legend">
+          <li><i class="jt-key is-dot" data-draw="key-hrv"></i>Overnight HRV (ms)</li>
+          <li><i class="jt-key" data-draw="key-hrvw"></i>7-day average</li>
+          <li><i class="jt-key is-bar" data-draw="key-sleep"></i>Sleep score</li>
+        </ul>
+        <div class="jt-chart is-short" id="chart-hrv" data-draw="hrv-trend" data-source="daily"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="jt-section" id="calendar">
+    <h2 class="jt-h2">Training calendar</h2>
+    <p class="jt-desc">Last 4 weeks. The last column adds up the week's time, running kilometres and training load.</p>
+    <ul class="jt-legend" data-draw="sport-legend"></ul>
+    <div data-draw="calendar" data-source="activities"></div>
+  </section>
+
+  <section class="jt-section" id="volume">
+    <h2 class="jt-h2">Weekly volume</h2>
+    <p class="jt-desc">Training hours by sport, last 12 weeks.</p>
+    <div class="jt-card"><div class="jt-chart" id="chart-volume" data-draw="weeks" data-source="weeks"></div></div>
+  </section>
+
+  <section class="jt-section" id="running">
+    <h2 class="jt-h2">Running progress</h2>
+    <p class="jt-desc">Each dot is a run of at least 1 km from the last 6 months. Aerobic efficiency is how many metres per minute you run for each heartbeat: when it rises, you run faster at the same heart rate.</p>
+    <div class="jt-grid2">
+      <div class="jt-card jt-section">
+        <h3 class="jt-label">Average pace (min/km)</h3>
+        <div class="jt-chart is-short" id="chart-pace" data-draw="pace" data-source="runs"></div>
+      </div>
+      <div class="jt-card jt-section">
+        <h3 class="jt-label">Aerobic efficiency (m/min per beat)</h3>
+        <div class="jt-chart is-short" id="chart-efficiency" data-draw="ef" data-source="runs"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="jt-section" id="activities">
+    <h2 class="jt-h2">Recent activities</h2>
+    <div class="jt-tablewrap">
+      <table class="jt-table" data-source="acts" data-row-key="id">
+        <thead>
+          <tr>
+            <th data-field="date">Date</th>
+            <th data-field="name">Activity</th>
+            <th data-field="duration">Duration</th>
+            <th data-field="distance" class="num">Km</th>
+            <th data-field="pace" class="num">Pace</th>
+            <th data-field="avg_hr" class="num">Avg HR</th>
+            <th data-field="load" class="num">Load</th>
+            <th data-field="te_aerobic" class="num">Aerobic TE</th>
+          </tr>
+        </thead>
+        <tbody data-draw="table"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <details class="jt-defs" id="definitions">
+    <summary>How the numbers are worked out</summary>
+    <dl>
+      <div><dt>Readiness</dt><dd>If your watch computes Training Readiness, the dashboard shows Garmin's score. Otherwise it shows its own estimate: a weighted average of five components, each on a 0 to 100 scale: sleep score (25%), last night's HRV against its 7-day average (25%), the day's highest Body Battery (20%), resting heart rate against its 14-day median (15%) and form (15%). Above 75 means ready for a hard day, under 55 an easy or rest day. The estimated components are shown either way.</dd></div>
+      <div><dt>Fitness, fatigue and form</dt><dd>Fitness is the 42-day exponential average of daily training load, fatigue the same average over 7 days. Today's form is yesterday's fitness minus yesterday's fatigue. Between -10 and -30 you are in a solid training block; above +5 you are fresh.</dd></div>
+      <div><dt>Training load</dt><dd>The value Garmin computes for each activity from its cardiac effort (EPOC). Days without activity have a load of 0.</dd></div>
+      <div><dt>Aerobic efficiency</dt><dd>A run's average speed in metres per minute divided by its average heart rate.</dd></div>
+    </dl>
+  </details>
+</div>
+
+<script>
+  // Shared helpers: number and date formatting, sports, tooltip.
+  (function () {
+    const nf = d3.formatLocale({ decimal: '.', thousands: ',', grouping: [3], currency: ['', ''], minus: '-' });
+    const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const MONTHS_LONG = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const parse = d3.utcParse('%Y-%m-%d');
+    const iso = d3.utcFormat('%Y-%m-%d');
+    const SPORTS = [
+      { key: 'strength', label: 'Strength' },
+      { key: 'run', label: 'Running' },
+      { key: 'bike', label: 'Cycling' },
+      { key: 'swim', label: 'Swimming' },
+      { key: 'walk', label: 'Walking & hiking' },
+      { key: 'other', label: 'Other' },
+    ];
+    const LEVELS = {
+      ok: { label: 'ready', title: 'Ready', color: 'var(--color-ok)' },
+      warn: { label: 'moderate', title: 'Moderate', color: 'var(--color-warn)' },
+      bad: { label: 'a recovery day', title: 'Recovery', color: 'var(--color-bad)' },
+    };
+    const STATUS = {
+      PRODUCTIVE: 'Productive', MAINTAINING: 'Maintaining', RECOVERY: 'Recovery', UNPRODUCTIVE: 'Unproductive',
+      DETRAINING: 'Detraining', OVERREACHING: 'Overreaching', PEAKING: 'Peaking', STRAINED: 'Strained', NO_STATUS: 'No status',
+    };
+    function sportColor(key) {
+      const i = SPORTS.findIndex((s) => s.key === key);
+      const c = dash.colors || [];
+      return c[(i < 0 ? SPORTS.length - 1 : i) % Math.max(c.length, 1)] || 'var(--color-fg-muted)';
+    }
+    window.JT = {
+      SPORTS, LEVELS, STATUS, parse, iso, sportColor,
+      int: (v) => (v == null ? '—' : nf.format(',.0f')(v)),
+      dec1: (v) => (v == null ? '—' : nf.format(',.1f')(v)),
+      dec2: (v) => (v == null ? '—' : nf.format(',.2f')(v)),
+      signed: (v) => (v == null ? '—' : (v > 0 ? '+' : '') + nf.format(',.0f')(v)),
+      day: (s) => { const d = parse(s); return d ? `${MONTHS[d.getUTCMonth()]} ${d.getUTCDate()}` : s; },
+      dayLong: (s) => { const d = parse(s); return d ? `${MONTHS_LONG[d.getUTCMonth()]} ${d.getUTCDate()}` : s; },
+      dow: (d) => DAYS[d.getUTCDay()],
+      month: (d) => MONTHS[d.getUTCMonth()],
+      dur: (min) => { if (min == null) return '—'; const m = Math.round(min); return `${Math.floor(m / 60)}:${String(m % 60).padStart(2, '0')}`; },
+      pace: (p) => { if (p == null || !isFinite(p)) return '—'; let m = Math.floor(p); let s = Math.round((p - m) * 60); if (s === 60) { m += 1; s = 0; } return `${m}:${String(s).padStart(2, '0')}`; },
+      statusLabel: (phrase) => { if (!phrase) return '—'; const base = String(phrase).replace(/_\d+$/, ''); return STATUS[base] || base.toLowerCase(); },
+      mark(el, source, field, row, text) {
+        const s = document.createElement('span');
+        s.setAttribute('data-source', source);
+        s.setAttribute('data-field', field);
+        if (row != null) s.setAttribute('data-row', String(row));
+        s.textContent = text;
+        el.appendChild(s);
+        return s;
+      },
+      ok: (...ids) => ids.every((id) => dash.data(id).status === 'ok'),
+      failed: (...ids) => ids.some((id) => ['error', 'missing', 'declined'].includes(dash.data(id).status)),
+      empty(el, ids, tag) {
+        el.replaceChildren();
+        if (JT.failed(...ids)) { const p = document.createElement(tag || 'p'); p.className = 'jt-failed'; p.textContent = 'Couldn\'t load.'; el.appendChild(p); }
+        else el.textContent = '—';
+      },
+      latestIndex(rows, field) { return rows.findIndex((r) => r[field] != null); },
+      tip(container) {
+        let t = container.querySelector(':scope > .jt-tip');
+        if (!t) { t = document.createElement('div'); t.className = 'jt-tip'; t.hidden = true; container.appendChild(t); }
+        return {
+          show(x, y, title, rows) {
+            t.replaceChildren();
+            const h = document.createElement('b'); h.textContent = title; t.appendChild(h);
+            rows.forEach(([k, v]) => {
+              const r = document.createElement('div'); r.className = 'jt-tip-row';
+              const a = document.createElement('span'); a.textContent = k;
+              const b = document.createElement('span'); b.textContent = v;
+              r.append(a, b); t.appendChild(r);
+            });
+            t.hidden = false;
+            const cw = container.clientWidth; const tw = t.offsetWidth; const th = t.offsetHeight;
+            let left = x + 14; if (left + tw > cw) left = Math.max(0, x - tw - 14);
+            let top = y - th - 10; if (top < 0) top = y + 14;
+            t.style.left = `${left}px`; t.style.top = `${top}px`;
+          },
+          hide() { t.hidden = true; },
+        };
+      },
+      svg(el, height) {
+        el.replaceChildren();
+        const w = Math.max(240, el.clientWidth || 600);
+        const svg = d3.select(el).append('svg').attr('viewBox', `0 0 ${w} ${height}`).attr('width', '100%').attr('height', height).attr('role', 'img');
+        return { svg, w, h: height };
+      },
+      levelOf: (v) => (v == null ? null : v >= 75 ? 'ok' : v >= 55 ? 'warn' : 'bad'),
+    };
+  })();
+</script>
+
+<script>
+  // The files arrive from Google Drive encoded (base64); turn them into rows.
+  // Older exports used Romanian sport keys; they are mapped to the English ones.
+  dash.loader('activities', {
+    description: 'Decodes activities.json downloaded from Google Drive and takes the rows written by garmin_export.py.',
+    fn: ({ answer, items }) => {
+      const SPORT = { forta: 'strength', alergare: 'run', ciclism: 'bike', inot: 'swim', mers: 'walk', altele: 'other' };
+      const fix = (rows) => rows.map((r) => (r && SPORT[r.sport] ? { ...r, sport: SPORT[r.sport] } : r));
+      const found = [];
+      const walk = (v, depth) => {
+        if (v == null || depth > 8) return;
+        if (typeof v === 'string') { found.push(v); return; }
+        if (Array.isArray(v)) { v.forEach((x) => walk(x, depth + 1)); return; }
+        if (typeof v === 'object') {
+          if (Array.isArray(v.rows)) { found.unshift(v); return; }
+          Object.keys(v).forEach((k) => walk(v[k], depth + 1));
+        }
+      };
+      [answer].concat(items || []).forEach((p) => walk(p, 0));
+      for (const f of found) {
+        if (typeof f === 'object') return { data: fix(f.rows), meta: f.meta };
+        let doc = null;
+        try { doc = JSON.parse(f); } catch (e) { doc = null; }
+        if (!doc || !Array.isArray(doc.rows)) {
+          try {
+            const bin = atob(f.replace(/\s/g, ''));
+            const bytes = Uint8Array.from(bin, (c) => c.charCodeAt(0));
+            doc = JSON.parse(new TextDecoder('utf-8').decode(bytes));
+          } catch (e) { doc = null; }
+        }
+        if (doc && Array.isArray(doc.rows)) return { data: fix(doc.rows), meta: doc.meta };
+      }
+      throw new Error('The Google Drive file does not hold the data exported by garmin_export.py.');
+    },
+  });
+  dash.loader('daily', {
+    description: 'Decodes daily.json downloaded from Google Drive and takes the rows written by garmin_export.py.',
+    fn: ({ answer, items }) => {
+      const SPORT = { forta: 'strength', alergare: 'run', ciclism: 'bike', inot: 'swim', mers: 'walk', altele: 'other' };
+      const fix = (rows) => rows.map((r) => (r && SPORT[r.sport] ? { ...r, sport: SPORT[r.sport] } : r));
+      const found = [];
+      const walk = (v, depth) => {
+        if (v == null || depth > 8) return;
+        if (typeof v === 'string') { found.push(v); return; }
+        if (Array.isArray(v)) { v.forEach((x) => walk(x, depth + 1)); return; }
+        if (typeof v === 'object') {
+          if (Array.isArray(v.rows)) { found.unshift(v); return; }
+          Object.keys(v).forEach((k) => walk(v[k], depth + 1));
+        }
+      };
+      [answer].concat(items || []).forEach((p) => walk(p, 0));
+      for (const f of found) {
+        if (typeof f === 'object') return { data: fix(f.rows), meta: f.meta };
+        let doc = null;
+        try { doc = JSON.parse(f); } catch (e) { doc = null; }
+        if (!doc || !Array.isArray(doc.rows)) {
+          try {
+            const bin = atob(f.replace(/\s/g, ''));
+            const bytes = Uint8Array.from(bin, (c) => c.charCodeAt(0));
+            doc = JSON.parse(new TextDecoder('utf-8').decode(bytes));
+          } catch (e) { doc = null; }
+        }
+        if (doc && Array.isArray(doc.rows)) return { data: fix(doc.rows), meta: doc.meta };
+      }
+      throw new Error('The Google Drive file does not hold the data exported by garmin_export.py.');
+    },
+  });
+  dash.loader('status', {
+    description: 'Decodes status.json downloaded from Google Drive and takes the rows written by garmin_export.py.',
+    fn: ({ answer, items }) => {
+      const SPORT = { forta: 'strength', alergare: 'run', ciclism: 'bike', inot: 'swim', mers: 'walk', altele: 'other' };
+      const fix = (rows) => rows.map((r) => (r && SPORT[r.sport] ? { ...r, sport: SPORT[r.sport] } : r));
+      const found = [];
+      const walk = (v, depth) => {
+        if (v == null || depth > 8) return;
+        if (typeof v === 'string') { found.push(v); return; }
+        if (Array.isArray(v)) { v.forEach((x) => walk(x, depth + 1)); return; }
+        if (typeof v === 'object') {
+          if (Array.isArray(v.rows)) { found.unshift(v); return; }
+          Object.keys(v).forEach((k) => walk(v[k], depth + 1));
+        }
+      };
+      [answer].concat(items || []).forEach((p) => walk(p, 0));
+      for (const f of found) {
+        if (typeof f === 'object') return { data: fix(f.rows), meta: f.meta };
+        let doc = null;
+        try { doc = JSON.parse(f); } catch (e) { doc = null; }
+        if (!doc || !Array.isArray(doc.rows)) {
+          try {
+            const bin = atob(f.replace(/\s/g, ''));
+            const bytes = Uint8Array.from(bin, (c) => c.charCodeAt(0));
+            doc = JSON.parse(new TextDecoder('utf-8').decode(bytes));
+          } catch (e) { doc = null; }
+        }
+        if (doc && Array.isArray(doc.rows)) return { data: fix(doc.rows), meta: doc.meta };
+      }
+      throw new Error('The Google Drive file does not hold the data exported by garmin_export.py.');
+    },
+  });
+</script>
+
+<script>
+  // Calculations: form (CTL/ATL/TSB), readiness, weekly volume, runs and the table.
+  dash.calc('pmc', {
+    title: 'Fitness, fatigue and form',
+    description: 'Exponential averages of daily Garmin training load: fitness over 42 days, fatigue over 7 days; today\'s form is yesterday\'s fitness minus yesterday\'s fatigue.',
+    inputs: ['activities', 'daily'],
+    fn: (activities, daily) => {
+      const loadByDay = new Map();
+      activities.forEach((a) => { loadByDay.set(a.date, (loadByDay.get(a.date) || 0) + (Number(a.load) || 0)); });
+      const dates = activities.map((a) => a.date).concat(daily.map((d) => d.date)).filter(Boolean).sort();
+      if (!dates.length) return [];
+      const first = activities.map((a) => a.date).sort()[0] || dates[0];
+      const last = dates[dates.length - 1];
+      const rows = [];
+      let ctl = 0; let atl = 0;
+      for (let t = Date.parse(first + 'T00:00:00Z'); t <= Date.parse(last + 'T00:00:00Z'); t += 86400000) {
+        const date = new Date(t).toISOString().slice(0, 10);
+        const load = loadByDay.get(date) || 0;
+        const tsb = ctl - atl;
+        ctl += (load - ctl) / 42;
+        atl += (load - atl) / 7;
+        rows.push({ date, load: Math.round(load), ctl: Math.round(ctl), atl: Math.round(atl), tsb: Math.round(tsb) });
+      }
+      return rows;
+    },
+  });
+
+  dash.calc('readiness', {
+    title: 'Readiness',
+    description: 'Garmin Training Readiness when the watch has it; otherwise a 0–100 weighted average: sleep 25%, HRV against its 7-day average 25%, highest Body Battery 20%, resting heart rate against its 14-day median 15%, form 15%.',
+    inputs: ['daily', 'pmc'],
+    fn: (daily, pmc) => {
+      const clamp = (x) => Math.max(0, Math.min(100, x));
+      const tsbByDay = new Map(pmc.map((p) => [p.date, p.tsb]));
+      const asc = daily.slice().sort((a, b) => (a.date < b.date ? -1 : 1));
+      const weights = { sleep: 0.25, hrv: 0.25, bb: 0.2, rhr: 0.15, form: 0.15 };
+      const out = asc.map((d, i) => {
+        const prev = asc.slice(Math.max(0, i - 14), i).map((x) => x.rhr).filter((v) => v != null).sort((a, b) => a - b);
+        const base = prev.length >= 5 ? (prev.length % 2 ? prev[(prev.length - 1) / 2] : (prev[prev.length / 2 - 1] + prev[prev.length / 2]) / 2) : null;
+        const c = {};
+        if (d.sleep_score != null) c.sleep = d.sleep_score;
+        if (d.hrv != null && d.hrv_week) {
+          let s = clamp(70 + (d.hrv / d.hrv_week - 1) * 200);
+          if (d.hrv_status === 'UNBALANCED') s = Math.min(s, 60);
+          if (d.hrv_status === 'LOW') s = Math.min(s, 40);
+          if (d.hrv_status === 'POOR') s = Math.min(s, 25);
+          c.hrv = s;
+        }
+        if (d.bb_high != null) c.bb = d.bb_high;
+        if (d.rhr != null && base != null) c.rhr = clamp(75 - (d.rhr - base) * 8);
+        if (tsbByDay.has(d.date)) c.form = clamp(80 + tsbByDay.get(d.date) * 1.3);
+        const keys = Object.keys(weights).filter((k) => c[k] != null);
+        const total = keys.reduce((s, k) => s + weights[k], 0);
+        const index = keys.length >= 3 ? Math.round(keys.reduce((s, k) => s + c[k] * weights[k], 0) / total) : null;
+        const r = (v) => (v == null ? null : Math.round(v));
+        const garmin = d.readiness == null ? null : Math.round(d.readiness);
+        const score = garmin != null ? garmin : index;
+        return {
+          date: d.date, score, source: garmin != null ? 'garmin' : 'estimate', garmin, index,
+          level: score == null ? null : score >= 75 ? 'ok' : score >= 55 ? 'warn' : 'bad',
+          c_sleep: r(c.sleep), c_hrv: r(c.hrv), c_bb: r(c.bb), c_rhr: r(c.rhr), c_form: r(c.form),
+          rhr_base: base == null ? null : Math.round(base), tsb: tsbByDay.has(d.date) ? tsbByDay.get(d.date) : null,
+        };
+      });
+      return out.reverse();
+    },
+  });
+
+  dash.calc('weeks', {
+    title: 'Weekly volume',
+    description: 'Training hours by sport, running kilometres and training load, by Monday-to-Sunday week, last 12 weeks.',
+    inputs: ['activities', 'daily'],
+    fn: (activities, daily) => {
+      const monday = (s) => { const t = Date.parse(s + 'T00:00:00Z'); const dow = (new Date(t).getUTCDay() + 6) % 7; return new Date(t - dow * 86400000).toISOString().slice(0, 10); };
+      const last = activities.map((a) => a.date).concat(daily.map((d) => d.date)).filter(Boolean).sort().pop();
+      if (!last) return [];
+      const lastWeek = Date.parse(monday(last) + 'T00:00:00Z');
+      const weeks = [];
+      for (let i = 11; i >= 0; i -= 1) {
+        weeks.push({ week: new Date(lastWeek - i * 7 * 86400000).toISOString().slice(0, 10), strength: 0, run: 0, bike: 0, swim: 0, other: 0, total_h: 0, run_km: 0, load: 0, sessions: 0 });
+      }
+      const byWeek = new Map(weeks.map((w) => [w.week, w]));
+      activities.forEach((a) => {
+        const w = byWeek.get(monday(a.date));
+        if (!w) return;
+        const h = (Number(a.duration_min) || 0) / 60;
+        const key = ['strength', 'run', 'bike', 'swim'].includes(a.sport) ? a.sport : 'other';
+        w[key] += h; w.total_h += h; w.load += Number(a.load) || 0; w.sessions += 1;
+        if (a.sport === 'run') w.run_km += Number(a.distance_km) || 0;
+      });
+      return weeks.map((w) => ({
+        ...w,
+        strength: Math.round(w.strength * 100) / 100, run: Math.round(w.run * 100) / 100, bike: Math.round(w.bike * 100) / 100,
+        swim: Math.round(w.swim * 100) / 100, other: Math.round(w.other * 100) / 100,
+        total_h: Math.round(w.total_h * 10) / 10, run_km: Math.round(w.run_km * 10) / 10, load: Math.round(w.load),
+      }));
+    },
+  });
+
+  dash.calc('runs', {
+    title: 'Runs',
+    description: 'Runs of at least 1 km: average pace (min/km) from Garmin\'s average speed, and aerobic efficiency (metres per minute divided by average heart rate).',
+    inputs: ['activities'],
+    fn: (activities) => activities
+      .filter((a) => a.sport === 'run' && Number(a.distance_km) >= 1 && Number(a.avg_speed) > 0)
+      .map((a) => ({
+        id: a.id, date: a.date, name: a.name, km: a.distance_km, avg_hr: a.avg_hr, vo2max: a.vo2max,
+        pace: Math.round((1000 / a.avg_speed / 60) * 100) / 100,
+        ef: a.avg_hr ? Math.round(((a.avg_speed * 60) / a.avg_hr) * 100) / 100 : null,
+      }))
+      .sort((a, b) => (a.date < b.date ? -1 : 1)),
+  });
+
+  dash.calc('acts', {
+    title: 'Recent activities',
+    description: 'The last 25 activities, with duration as hours:minutes and pace for running (min/km) and swimming (min/100 m).',
+    inputs: ['activities'],
+    fn: (activities) => {
+      const t = (min) => { const m = Math.round(min || 0); return `${Math.floor(m / 60)}:${String(m % 60).padStart(2, '0')}`; };
+      const p = (minutes) => { let m = Math.floor(minutes); let s = Math.round((minutes - m) * 60); if (s === 60) { m += 1; s = 0; } return `${m}:${String(s).padStart(2, '0')}`; };
+      return activities.filter((a) => a.type !== 'assistance').slice(0, 25).map((a) => {
+        const distanceSport = ['run', 'bike', 'swim', 'walk'].includes(a.sport);
+        let pace = null;
+        if (a.avg_speed > 0 && (a.sport === 'run' || a.sport === 'walk')) pace = `${p(1000 / a.avg_speed / 60)} /km`;
+        if (a.avg_speed > 0 && a.sport === 'swim') pace = `${p(100 / a.avg_speed / 60)} /100m`;
+        if (a.avg_speed > 0 && a.sport === 'bike') pace = `${Math.round(a.avg_speed * 3.6 * 10) / 10} km/h`;
+        return {
+          id: a.id, date: a.date, start: a.start, name: a.name, sport: a.sport,
+          duration: t(a.duration_min), distance: distanceSport && a.distance_km ? a.distance_km : null,
+          pace, avg_hr: a.avg_hr, load: a.load, te_aerobic: a.te_aerobic,
+        };
+      });
+    },
+  });
+</script>
+
+<script>
+  // Which note the readiness card shows: Garmin's score or the dashboard's estimate.
+  dash.onData(() => {
+    const r = dash.data('readiness');
+    const src = r.status === 'ok' && r.data && r.data.length ? r.data[0].source : 'estimate';
+    document.querySelectorAll('[data-when]').forEach((p) => { p.hidden = p.getAttribute('data-when') !== src; });
+  });
+</script>
+
+<script>
+  // Header and today's cards.
+  dash.draw('lede-date', (el) => {
+    const r = dash.data('readiness');
+    if (r.status !== 'ok' || !r.data || !r.data.length) { el.textContent = '—'; return; }
+    el.textContent = `On ${JT.dayLong(r.data[0].date)}`;
+  });
+  dash.draw('lede-ready', (el) => {
+    const r = dash.data('readiness');
+    el.replaceChildren();
+    if (r.status !== 'ok' || !r.data || !r.data.length) { el.textContent = '—'; return; }
+    JT.mark(el, 'readiness', 'score', 0, JT.int(r.data[0].score));
+  });
+  dash.draw('lede-level', (el) => {
+    const r = dash.data('readiness');
+    if (r.status !== 'ok' || !r.data || !r.data.length || !r.data[0].level) { el.textContent = '—'; return; }
+    el.textContent = JT.LEVELS[r.data[0].level].label;
+  });
+  dash.draw('lede-tsb', (el) => {
+    const p = dash.data('pmc');
+    el.replaceChildren();
+    if (p.status !== 'ok' || !p.data || !p.data.length) { el.textContent = '—'; return; }
+    JT.mark(el, 'pmc', 'tsb', p.data.length - 1, JT.signed(p.data[p.data.length - 1].tsb));
+  });
+  dash.draw('lede-status', (el) => {
+    const s = dash.data('status');
+    if (s.status !== 'ok' || !s.data.length) { el.textContent = '—'; return; }
+    el.textContent = JT.statusLabel(s.data[0].training_status);
+  });
+
+  dash.draw('gauge', (el) => {
+    const r = dash.data('readiness');
+    el.replaceChildren();
+    if (r.status !== 'ok' || !r.data || !r.data.length || r.data[0].score == null) { JT.empty(el, ['daily', 'activities']); return; }
+    const v = r.data[0].score;
+    const W = 168; const H = 104; const R = 74; const cx = W / 2; const cy = 86;
+    const svg = d3.select(el).append('svg').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', `Readiness ${v} out of 100`);
+    const arc = d3.arc().innerRadius(R - 12).outerRadius(R).cornerRadius(6);
+    const a0 = -Math.PI / 2; const a1 = Math.PI / 2;
+    svg.append('path').attr('transform', `translate(${cx},${cy})`).attr('d', arc({ startAngle: a0, endAngle: a1 })).style('fill', 'var(--cds-chart-grid)');
+    svg.append('path').attr('transform', `translate(${cx},${cy})`).attr('d', arc({ startAngle: a0, endAngle: a0 + (a1 - a0) * Math.max(0.02, v / 100) })).style('fill', JT.LEVELS[JT.levelOf(v)].color);
+    const label = document.createElement('div');
+    label.style.cssText = 'position:absolute;left:0;right:0;bottom:0;text-align:center;font-family:var(--font-anthropic-serif);font-size:2.6rem;line-height:1;font-variant-numeric:tabular-nums;';
+    JT.mark(label, 'readiness', 'score', 0, JT.int(v));
+    el.appendChild(label);
+  });
+
+  dash.draw('ready-level', (el) => {
+    const r = dash.data('readiness');
+    el.classList.remove('is-ok', 'is-warn', 'is-bad');
+    if (r.status !== 'ok' || !r.data || !r.data.length || !r.data[0].level) { el.textContent = '—'; return; }
+    el.classList.add(`is-${r.data[0].level}`);
+    el.textContent = JT.LEVELS[r.data[0].level].title;
+  });
+
+  dash.draw('comps', (el) => {
+    el.replaceChildren();
+    if (!JT.ok('readiness', 'daily', 'pmc')) { JT.empty(el, ['daily', 'activities'], 'li'); return; }
+    const r = dash.data('readiness').data[0];
+    const daily = dash.data('daily').data;
+    const di = daily.findIndex((d) => d.date === r.date);
+    const d = daily[di] || {};
+    const items = [
+      { name: 'Sleep', field: 'c_sleep', ctx: () => [['daily', 'sleep_score', d.sleep_score, (v) => `score ${JT.int(v)}`]] },
+      { name: 'HRV', field: 'c_hrv', ctx: () => [['daily', 'hrv', d.hrv, (v) => `${JT.int(v)} ms`], [null, null, d.hrv_week, (v) => ` vs ${JT.int(v)}`]] },
+      { name: 'Body Battery', field: 'c_bb', ctx: () => [['daily', 'bb_high', d.bb_high, (v) => `high ${JT.int(v)}`]] },
+      { name: 'Resting HR', field: 'c_rhr', ctx: () => [['daily', 'rhr', d.rhr, (v) => `${JT.int(v)} bpm`], [null, null, r.rhr_base, (v) => ` vs ${JT.int(v)}`]] },
+      { name: 'Form', field: 'c_form', ctx: () => [['readiness', 'tsb', r.tsb, (v) => `TSB ${JT.signed(v)}`]] },
+    ];
+    items.forEach((it) => {
+      const v = r[it.field];
+      const li = document.createElement('li'); li.className = 'jt-comp';
+      const name = document.createElement('div'); name.className = 'jt-comp-name';
+      const n = document.createElement('span'); n.textContent = it.name; name.appendChild(n);
+      const small = document.createElement('small');
+      it.ctx().forEach(([src, field, val, f]) => {
+        if (val == null) return;
+        if (src === 'daily') JT.mark(small, 'daily', field, di, f(val));
+        else if (src === 'readiness') JT.mark(small, 'readiness', field, 0, f(val));
+        else small.appendChild(document.createTextNode(f(val)));
+      });
+      if (!small.childNodes.length) small.textContent = 'no data';
+      name.appendChild(small);
+      const bar = document.createElement('div'); bar.className = 'jt-comp-bar';
+      const fill = document.createElement('i');
+      fill.style.width = `${v == null ? 0 : v}%`;
+      fill.style.background = v == null ? 'transparent' : JT.LEVELS[JT.levelOf(v)].color;
+      bar.appendChild(fill);
+      const val = document.createElement('span'); val.className = 'jt-comp-val';
+      if (v == null) val.textContent = '—'; else JT.mark(val, 'readiness', it.field, 0, JT.int(v));
+      li.append(name, bar, val);
+      el.appendChild(li);
+    });
+  });
+
+  // Cards with the latest day's value and a 14-day sparkline.
+  function tile(prefix, field, unit, sub) {
+    dash.draw(`${prefix}-val`, (el) => {
+      const d = dash.data('daily');
+      el.replaceChildren();
+      if (d.status !== 'ok') { JT.empty(el, ['daily']); return; }
+      const i = JT.latestIndex(d.data, field);
+      if (i < 0) { el.textContent = '—'; return; }
+      JT.mark(el, 'daily', field, i, JT.int(d.data[i][field]));
+      const u = document.createElement('small'); u.textContent = unit; el.appendChild(u);
+    });
+    dash.draw(`${prefix}-sub`, (el) => {
+      const d = dash.data('daily');
+      el.replaceChildren();
+      if (d.status !== 'ok') { el.textContent = '—'; return; }
+      const i = JT.latestIndex(d.data, field);
+      if (i < 0) { el.textContent = 'no data'; return; }
+      sub(el, d.data, i);
+    });
+    dash.draw(`${prefix}-spark`, (el) => {
+      const d = dash.data('daily');
+      el.replaceChildren();
+      if (d.status !== 'ok') return;
+      const rows = d.data.slice(0, 14).filter((r) => r[field] != null).reverse();
+      if (rows.length < 2) return;
+      const w = Math.max(100, el.clientWidth || 160); const h = 34;
+      const x = d3.scaleUtc().domain(d3.extent(rows, (r) => JT.parse(r.date))).range([3, w - 3]);
+      const ext = d3.extent(rows, (r) => r[field]);
+      const pad = (ext[1] - ext[0]) * 0.15 || 2;
+      const y = d3.scaleLinear().domain([ext[0] - pad, ext[1] + pad]).range([h - 3, 3]);
+      const color = dash.colors[0];
+      const svg = d3.select(el).append('svg').attr('viewBox', `0 0 ${w} ${h}`).attr('role', 'img').attr('aria-label', `Last 14 days`);
+      const area = d3.area().x((r) => x(JT.parse(r.date))).y0(h).y1((r) => y(r[field]));
+      const line = d3.line().x((r) => x(JT.parse(r.date))).y((r) => y(r[field]));
+      svg.append('path').datum(rows).attr('d', area).style('fill', color).style('opacity', 0.12);
+      svg.append('path').datum(rows).attr('d', line).style('fill', 'none').style('stroke', color).style('stroke-width', 1.6);
+      const lastR = rows[rows.length - 1];
+      svg.append('circle').attr('cx', x(JT.parse(lastR.date))).attr('cy', y(lastR[field])).attr('r', 3).style('fill', color);
+    });
+  }
+
+  tile('sleep', 'sleep_score', 'score', (el, rows, i) => {
+    const r = rows[i];
+    if (r.sleep_h != null) { JT.mark(el, 'daily', 'sleep_h', i, `${JT.dec1(r.sleep_h)} h`); el.appendChild(document.createTextNode(' asleep')); }
+    if (r.deep_h != null) { el.appendChild(document.createTextNode(', deep ')); JT.mark(el, 'daily', 'deep_h', i, `${JT.dec1(r.deep_h)} h`); }
+  });
+  tile('hrv', 'hrv', 'ms', (el, rows, i) => {
+    const r = rows[i];
+    el.appendChild(document.createTextNode('7-day average '));
+    JT.mark(el, 'daily', 'hrv_week', i, `${JT.int(r.hrv_week)} ms`);
+    if (r.hrv_status) el.appendChild(document.createTextNode(r.hrv_status === 'BALANCED' ? ' · balanced' : r.hrv_status === 'UNBALANCED' ? ' · unbalanced' : r.hrv_status === 'LOW' ? ' · low' : ' · ' + r.hrv_status.toLowerCase()));
+  });
+  tile('rhr', 'rhr', 'bpm', (el, rows, i) => {
+    const R = dash.data('readiness');
+    const rr = R.status === 'ok' && R.data ? R.data.find((x) => x.date === rows[i].date) : null;
+    if (rr && rr.rhr_base != null) {
+      const ri = R.data.indexOf(rr);
+      el.appendChild(document.createTextNode('14-day median '));
+      JT.mark(el, 'readiness', 'rhr_base', ri, `${JT.int(rr.rhr_base)} bpm`);
+    } else el.textContent = 'lowest heart rate in sleep';
+  });
+  tile('bb', 'bb_high', 'high', (el, rows, i) => {
+    const r = rows[i];
+    el.appendChild(document.createTextNode('low '));
+    JT.mark(el, 'daily', 'bb_low', i, JT.int(r.bb_low));
+    if (r.stress_avg != null) { el.appendChild(document.createTextNode(' · average stress ')); JT.mark(el, 'daily', 'stress_avg', i, JT.int(r.stress_avg)); }
+  });
+
+  dash.draw('status-val', (el) => {
+    const s = dash.data('status');
+    if (s.status !== 'ok' || !s.data.length) { JT.empty(el, ['status']); return; }
+    el.textContent = JT.statusLabel(s.data[0].training_status);
+  });
+  [['status-acute', 'acute_load', JT.int], ['status-chronic', 'chronic_load', JT.int], ['status-acwr', 'acwr', JT.dec1], ['status-vo2', 'vo2max', JT.int]].forEach(([name, field, fmt]) => {
+    dash.draw(name, (el) => {
+      const s = dash.data('status');
+      el.replaceChildren();
+      if (s.status !== 'ok' || !s.data.length || s.data[0][field] == null) { el.textContent = '—'; return; }
+      JT.mark(el, 'status', field, 0, fmt(s.data[0][field]));
+    });
+  });
+</script>
+
+<script>
+  // Legend colours.
+  dash.draw('key-ctl', (el) => { el.style.background = dash.colors[0]; });
+  dash.draw('key-atl', (el) => { el.style.background = dash.colors[1]; });
+  dash.draw('key-tsb', (el) => { el.style.background = 'var(--cds-chart-muted)'; });
+  dash.draw('key-hrv', (el) => { el.style.background = dash.colors[0]; });
+  dash.draw('key-hrvw', (el) => { el.style.background = dash.colors[1]; });
+  dash.draw('key-sleep', (el) => { el.style.background = 'var(--cds-chart-muted)'; });
+  document.querySelectorAll('.jt-k-ok').forEach((e) => { e.style.background = 'var(--color-ok)'; });
+  document.querySelectorAll('.jt-k-warn').forEach((e) => { e.style.background = 'var(--color-warn)'; });
+  document.querySelectorAll('.jt-k-bad').forEach((e) => { e.style.background = 'var(--color-bad)'; });
+
+  // Fitness, fatigue and form.
+  dash.draw('pmc', (el) => {
+    const p = dash.data('pmc');
+    if (p.status !== 'ok' || !p.data || !p.data.length) { JT.empty(el, ['activities', 'daily']); return; }
+    const rows = p.data.slice(-120).map((r) => ({ ...r, d: JT.parse(r.date) }));
+    const H = 320;
+    const { svg, w } = JT.svg(el, H);
+    svg.attr('aria-label', 'Fitness, fatigue and form over the last 120 days');
+    const m = { l: 34, r: 12, t: 10, b: 24 };
+    const topH = 180; const gap = 34; const botTop = m.t + topH + gap; const botH = H - botTop - m.b;
+    const x = d3.scaleUtc().domain(d3.extent(rows, (r) => r.d)).range([m.l, w - m.r]);
+    const yTop = d3.scaleLinear().domain([0, d3.max(rows, (r) => Math.max(r.ctl, r.atl)) * 1.1 || 10]).nice().range([m.t + topH, m.t]);
+    const tsbExt = d3.extent(rows, (r) => r.tsb);
+    const yBot = d3.scaleLinear().domain([Math.min(-5, tsbExt[0]), Math.max(5, tsbExt[1])]).nice().range([botTop + botH, botTop]);
+    const ticks = Math.max(2, Math.floor((w - m.l - m.r) / 90));
+    svg.append('g').attr('transform', `translate(0,${botTop + botH})`).call(d3.axisBottom(x).ticks(ticks).tickFormat((d) => `${d.getUTCDate()} ${JT.month(d)}`).tickSizeOuter(0));
+    svg.append('g').attr('transform', `translate(${m.l},0)`).call(d3.axisLeft(yTop).ticks(4).tickSize(-(w - m.l - m.r))).call((g) => g.select('.domain').remove());
+    const botTicks = [...new Set([yBot.domain()[0], 0, yBot.domain()[1]])];
+    svg.append('g').attr('transform', `translate(${m.l},0)`).call(d3.axisLeft(yBot).tickValues(botTicks).tickFormat((v) => JT.signed(v)).tickSize(-(w - m.l - m.r))).call((g) => g.select('.domain').remove());
+    const bw = Math.max(1, (w - m.l - m.r) / rows.length - 1);
+    svg.append('g').selectAll('rect').data(rows).join('rect')
+      .attr('x', (r) => x(r.d) - bw / 2).attr('width', bw)
+      .attr('y', (r) => Math.min(yBot(0), yBot(r.tsb))).attr('height', (r) => Math.abs(yBot(r.tsb) - yBot(0)))
+      .style('fill', (r) => (r.tsb >= 0 ? 'var(--color-ok)' : 'var(--cds-chart-muted)'));
+    svg.append('line').attr('x1', m.l).attr('x2', w - m.r).attr('y1', yBot(0)).attr('y2', yBot(0)).style('stroke', 'var(--cds-chart-reference)');
+    const line = (k) => d3.line().x((r) => x(r.d)).y((r) => yTop(r[k]));
+    svg.append('path').datum(rows).attr('d', line('atl')).style('fill', 'none').style('stroke', dash.colors[1]).style('stroke-width', 1.5);
+    svg.append('path').datum(rows).attr('d', line('ctl')).style('fill', 'none').style('stroke', dash.colors[0]).style('stroke-width', 2.2);
+    const last = rows[rows.length - 1];
+    svg.append('circle').attr('cx', x(last.d)).attr('cy', yTop(last.ctl)).attr('r', 3.5).style('fill', dash.colors[0]);
+    svg.append('text').attr('class', 'jt-axis-label').attr('x', m.l + 4).attr('y', botTop - 12).text('Form');
+    const tip = JT.tip(el);
+    const guide = svg.append('line').attr('y1', m.t).attr('y2', botTop + botH).style('stroke', 'var(--cds-chart-reference)').style('pointer-events', 'none').attr('visibility', 'hidden');
+    const bis = d3.bisector((r) => r.d).center;
+    svg.append('rect').attr('x', m.l).attr('y', m.t).attr('width', w - m.l - m.r).attr('height', botTop + botH - m.t).style('fill', 'transparent')
+      .on('pointermove pointerdown', (ev) => {
+        const [px] = d3.pointer(ev);
+        const r = rows[bis(rows, x.invert(px))];
+        guide.attr('x1', x(r.d)).attr('x2', x(r.d)).attr('visibility', 'visible');
+        const sx = (x(r.d) / w) * el.clientWidth;
+        tip.show(sx, 30, JT.day(r.date), [['Load', JT.int(r.load)], ['Fitness', JT.int(r.ctl)], ['Fatigue', JT.int(r.atl)], ['Form', JT.signed(r.tsb)]]);
+      })
+      .on('pointerleave', () => { guide.attr('visibility', 'hidden'); tip.hide(); });
+  });
+
+  // Readiness for each of the last 42 days.
+  dash.draw('ready-trend', (el) => {
+    const R = dash.data('readiness');
+    if (R.status !== 'ok' || !R.data || !R.data.length) { JT.empty(el, ['daily', 'activities']); return; }
+    const rows = R.data.filter((r) => r.score != null).slice().reverse().map((r) => ({ ...r, d: JT.parse(r.date) }));
+    const { svg, w, h } = JT.svg(el, 190);
+    svg.attr('aria-label', 'Readiness for each day of the last 6 weeks');
+    const m = { l: 28, r: 8, t: 8, b: 24 };
+    const x = d3.scaleBand().domain(rows.map((r) => r.date)).range([m.l, w - m.r]).padding(0.18);
+    const y = d3.scaleLinear().domain([0, 100]).range([h - m.b, m.t]);
+    svg.append('g').attr('transform', `translate(${m.l},0)`).call(d3.axisLeft(y).tickValues([0, 55, 75, 100]).tickSize(-(w - m.l - m.r))).call((g) => g.select('.domain').remove());
+    const every = Math.ceil(rows.length / Math.max(2, Math.floor((w - m.l - m.r) / 60)));
+    svg.append('g').attr('transform', `translate(0,${h - m.b})`).call(d3.axisBottom(x).tickValues(rows.filter((_, i) => (rows.length - 1 - i) % every === 0).map((r) => r.date)).tickFormat((s) => JT.day(s)).tickSizeOuter(0));
+    const tip = JT.tip(el);
+    svg.append('g').selectAll('rect').data(rows).join('rect')
+      .attr('x', (r) => x(r.date)).attr('width', x.bandwidth()).attr('y', (r) => y(r.score)).attr('height', (r) => y(0) - y(r.score)).attr('rx', 2)
+      .style('fill', (r) => JT.LEVELS[r.level].color)
+      .on('pointerenter pointerdown', (ev, r) => {
+        const sx = ((x(r.date) + x.bandwidth() / 2) / w) * el.clientWidth;
+        tip.show(sx, (y(r.score) / h) * 190, `${JT.day(r.date)} · ${JT.int(r.score)}${r.source === 'garmin' ? ' (Garmin)' : ''}`, [['Estimate', JT.int(r.index)], ['Sleep', JT.int(r.c_sleep)], ['HRV', JT.int(r.c_hrv)], ['Body Battery', JT.int(r.c_bb)], ['Resting HR', JT.int(r.c_rhr)], ['Form', JT.int(r.c_form)]]);
+      })
+      .on('pointerleave', () => tip.hide());
+  });
+
+  // Overnight HRV, its 7-day average and the sleep score.
+  dash.draw('hrv-trend', (el) => {
+    const D = dash.data('daily');
+    if (D.status !== 'ok' || !D.data.length) { JT.empty(el, ['daily']); return; }
+    const rows = D.data.slice().reverse().map((r) => ({ ...r, d: JT.parse(r.date) }));
+    const { svg, w, h } = JT.svg(el, 190);
+    svg.attr('aria-label', 'Overnight HRV, its 7-day average and the sleep score over the last 6 weeks');
+    const m = { l: 28, r: 30, t: 8, b: 24 };
+    const x = d3.scaleUtc().domain(d3.extent(rows, (r) => r.d)).range([m.l + 4, w - m.r - 4]);
+    const vals = rows.flatMap((r) => [r.hrv, r.hrv_week]).filter((v) => v != null);
+    const y = d3.scaleLinear().domain([d3.min(vals) - 5, d3.max(vals) + 5]).nice().range([h - m.b, m.t]);
+    const ys = d3.scaleLinear().domain([0, 100]).range([h - m.b, m.t]);
+    svg.append('g').attr('transform', `translate(${m.l},0)`).call(d3.axisLeft(y).ticks(4).tickSize(-(w - m.l - m.r))).call((g) => g.select('.domain').remove());
+    svg.append('g').attr('transform', `translate(${w - m.r},0)`).call(d3.axisRight(ys).ticks(2).tickSize(0)).call((g) => g.select('.domain').remove());
+    svg.append('g').attr('transform', `translate(0,${h - m.b})`).call(d3.axisBottom(x).ticks(Math.max(2, Math.floor((w - m.l - m.r) / 80))).tickFormat((d) => `${d.getUTCDate()} ${JT.month(d)}`).tickSizeOuter(0));
+    const bw = Math.max(2, (w - m.l - m.r) / rows.length - 2);
+    svg.append('g').selectAll('rect').data(rows.filter((r) => r.sleep_score != null)).join('rect')
+      .attr('x', (r) => x(r.d) - bw / 2).attr('width', bw).attr('y', (r) => ys(r.sleep_score)).attr('height', (r) => ys(0) - ys(r.sleep_score))
+      .style('fill', 'var(--cds-chart-muted)').style('opacity', 0.35);
+    const wk = rows.filter((r) => r.hrv_week != null);
+    svg.append('path').datum(wk).attr('d', d3.line().x((r) => x(r.d)).y((r) => y(r.hrv_week))).style('fill', 'none').style('stroke', dash.colors[1]).style('stroke-width', 2);
+    svg.append('g').selectAll('circle').data(rows.filter((r) => r.hrv != null)).join('circle')
+      .attr('cx', (r) => x(r.d)).attr('cy', (r) => y(r.hrv)).attr('r', 3).style('fill', dash.colors[0]);
+    const tip = JT.tip(el);
+    const bis = d3.bisector((r) => r.d).center;
+    svg.append('rect').attr('x', m.l).attr('y', m.t).attr('width', w - m.l - m.r).attr('height', h - m.t - m.b).style('fill', 'transparent')
+      .on('pointermove pointerdown', (ev) => {
+        const [px] = d3.pointer(ev);
+        const r = rows[bis(rows, x.invert(px))];
+        tip.show((x(r.d) / w) * el.clientWidth, 20, JT.day(r.date), [['HRV', r.hrv == null ? '—' : `${JT.int(r.hrv)} ms`], ['7-day average', `${JT.int(r.hrv_week)} ms`], ['Sleep score', JT.int(r.sleep_score)], ['Sleep', r.sleep_h == null ? '—' : `${JT.dec1(r.sleep_h)} h`]]);
+      })
+      .on('pointerleave', () => tip.hide());
+  });
+</script>
+
+<script>
+  // Sport legend and the 4-week calendar.
+  dash.draw('sport-legend', (el) => {
+    el.replaceChildren();
+    const A = dash.data('activities');
+    const present = new Set(A.status === 'ok' ? A.data.map((a) => a.sport) : []);
+    JT.SPORTS.filter((s) => present.has(s.key)).forEach((s) => {
+      const li = document.createElement('li');
+      const k = document.createElement('i'); k.className = 'jt-key is-bar'; k.style.background = JT.sportColor(s.key);
+      li.append(k, document.createTextNode(s.label));
+      el.appendChild(li);
+    });
+  });
+
+  dash.draw('calendar', (el) => {
+    const A = dash.data('activities');
+    const D = dash.data('daily');
+    if (A.status !== 'ok') { JT.empty(el, ['activities']); return; }
+    el.replaceChildren();
+    const dates = A.data.map((a) => a.date).concat(D.status === 'ok' ? D.data.map((d) => d.date) : []).sort();
+    const end = JT.parse(dates[dates.length - 1]);
+    const endMon = new Date(end.getTime() - ((end.getUTCDay() + 6) % 7) * 86400000);
+    const start = new Date(endMon.getTime() - 21 * 86400000);
+    const byDay = d3.group(A.data.filter((a) => a.type !== 'assistance'), (a) => a.date);
+    const weeks = [];
+    for (let wi = 0; wi < 4; wi += 1) {
+      const days = [];
+      for (let di = 0; di < 7; di += 1) {
+        const d = new Date(start.getTime() + (wi * 7 + di) * 86400000);
+        const key = JT.iso(d);
+        const acts = (byDay.get(key) || []).slice().sort((a, b) => (a.start < b.start ? -1 : 1));
+        days.push({ d, key, acts, future: d > end });
+      }
+      const all = days.flatMap((x) => x.acts);
+      weeks.push({
+        days, mon: days[0].d,
+        min: d3.sum(all, (a) => a.duration_min || 0),
+        km: d3.sum(all.filter((a) => a.sport === 'run'), (a) => a.distance_km || 0),
+        load: d3.sum(all, (a) => a.load || 0),
+        n: all.length,
+      });
+    }
+    const actLine = (a) => {
+      const box = document.createElement('div'); box.className = 'jt-act'; box.style.borderLeftColor = JT.sportColor(a.sport);
+      const n = document.createElement('span'); n.className = 'jt-act-name'; n.textContent = a.name || JT.SPORTS.find((s) => s.key === a.sport)?.label || 'Activity';
+      const meta = document.createElement('span'); meta.className = 'jt-act-meta';
+      const bits = [JT.dur(a.duration_min)];
+      if (a.distance_km && ['run', 'bike', 'swim', 'walk'].includes(a.sport)) bits.push(a.sport === 'swim' ? `${JT.int(a.distance_km * 1000)} m` : `${JT.dec1(a.distance_km)} km`);
+      meta.textContent = bits.join(' · ');
+      box.title = `${a.name || ''} · ${a.start || ''}`;
+      box.append(n, meta);
+      if (a.load != null) { const ld = document.createElement('span'); ld.className = 'jt-act-load'; ld.textContent = `Load ${JT.int(a.load)}`; box.appendChild(ld); }
+      return box;
+    };
+    const weekTotals = (wk) => [`${JT.dur(wk.min)} h`, wk.km ? `${JT.dec1(wk.km)} km run` : null, `load ${JT.int(wk.load)}`].filter(Boolean);
+
+    if ((el.clientWidth || 800) >= 640) {
+      const grid = document.createElement('div'); grid.className = 'jt-cal';
+      ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday', 'Week'].forEach((t) => {
+        const h = document.createElement('div'); h.className = 'jt-cal-h'; h.textContent = t; grid.appendChild(h);
+      });
+      weeks.forEach((wk) => {
+        wk.days.forEach((day) => {
+          const c = document.createElement('div'); c.className = 'jt-day';
+          if (day.future) c.classList.add('is-out');
+          if (day.key === JT.iso(end)) c.classList.add('is-today');
+          const top = document.createElement('div'); top.className = 'jt-day-n';
+          const dn = document.createElement('span'); dn.textContent = day.d.getUTCDate() === 1 || day === wk.days[0] ? `${day.d.getUTCDate()} ${JT.month(day.d)}` : String(day.d.getUTCDate());
+          top.appendChild(dn);
+          const L = d3.sum(day.acts, (a) => a.load || 0);
+          if (L) { const l = document.createElement('span'); l.textContent = JT.int(L); l.title = 'Training load al zilei'; top.appendChild(l); }
+          c.appendChild(top);
+          day.acts.forEach((a) => c.appendChild(actLine(a)));
+          grid.appendChild(c);
+        });
+        const t = document.createElement('div'); t.className = 'jt-wk';
+        const b = document.createElement('b'); b.textContent = `${JT.dur(wk.min)} h`; t.appendChild(b);
+        weekTotals(wk).slice(1).forEach((s) => { const sp = document.createElement('span'); sp.textContent = s; t.appendChild(sp); });
+        const sp = document.createElement('span'); sp.textContent = `${wk.n} ${wk.n === 1 ? 'session' : 'sessions'}`; t.appendChild(sp);
+        grid.appendChild(t);
+      });
+      el.appendChild(grid);
+    } else {
+      const list = document.createElement('div'); list.className = 'jt-callist';
+      weeks.slice().reverse().forEach((wk) => {
+        const box = document.createElement('div'); box.className = 'jt-callist-week';
+        const head = document.createElement('div'); head.className = 'jt-callist-head';
+        const a = document.createElement('span'); a.textContent = `Week of ${JT.month(wk.mon)} ${wk.mon.getUTCDate()}`;
+        const b = document.createElement('span'); b.textContent = weekTotals(wk).join(' · ');
+        head.append(a, b); box.appendChild(head);
+        wk.days.slice().reverse().filter((d) => d.acts.length).forEach((day) => {
+          const row = document.createElement('div'); row.className = 'jt-callist-day';
+          const lab = document.createElement('span'); lab.textContent = `${JT.dow(day.d)} ${day.d.getUTCDate()}`;
+          const col = document.createElement('div');
+          day.acts.forEach((x) => col.appendChild(actLine(x)));
+          row.append(lab, col); box.appendChild(row);
+        });
+        if (!wk.n) { const p = document.createElement('p'); p.className = 'jt-note'; p.textContent = 'No training.'; box.appendChild(p); }
+        list.appendChild(box);
+      });
+      el.appendChild(list);
+    }
+  });
+
+  // Weekly volume by sport.
+  dash.draw('weeks', (el) => {
+    const W = dash.data('weeks');
+    if (W.status !== 'ok' || !W.data || !W.data.length) { JT.empty(el, ['activities']); return; }
+    const keys = ['strength', 'run', 'bike', 'swim', 'other'];
+    const rows = W.data;
+    const { svg, w, h } = JT.svg(el, 240);
+    svg.attr('aria-label', 'Training hours per week by sport, last 12 weeks');
+    const m = { l: 30, r: 8, t: 18, b: 24 };
+    const x = d3.scaleBand().domain(rows.map((r) => r.week)).range([m.l, w - m.r]).padding(0.25);
+    const y = d3.scaleLinear().domain([0, d3.max(rows, (r) => r.total_h) * 1.12 || 1]).nice().range([h - m.b, m.t]);
+    svg.append('g').attr('transform', `translate(${m.l},0)`).call(d3.axisLeft(y).ticks(4).tickFormat((v) => `${v} h`).tickSize(-(w - m.l - m.r))).call((g) => g.select('.domain').remove());
+    const every = Math.ceil(rows.length / Math.max(2, Math.floor((w - m.l - m.r) / 56)));
+    svg.append('g').attr('transform', `translate(0,${h - m.b})`).call(d3.axisBottom(x).tickValues(rows.filter((_, i) => (rows.length - 1 - i) % every === 0).map((r) => r.week)).tickFormat((s) => JT.day(s)).tickSizeOuter(0));
+    const stack = d3.stack().keys(keys)(rows);
+    const tip = JT.tip(el);
+    svg.append('g').selectAll('g').data(stack).join('g').style('fill', (s) => JT.sportColor(s.key))
+      .selectAll('rect').data((s) => s).join('rect')
+      .attr('x', (d) => x(d.data.week)).attr('width', x.bandwidth())
+      .attr('y', (d) => y(d[1])).attr('height', (d) => Math.max(0, y(d[0]) - y(d[1])));
+    svg.append('g').selectAll('text').data(rows.filter((r) => r.total_h > 0)).join('text').attr('class', 'jt-axis-label')
+      .attr('x', (r) => x(r.week) + x.bandwidth() / 2).attr('y', (r) => y(r.total_h) - 4).attr('text-anchor', 'middle')
+      .text((r) => (x.bandwidth() >= 22 ? JT.dec1(r.total_h) : ''));
+    svg.append('g').selectAll('rect').data(rows).join('rect')
+      .attr('x', (r) => x(r.week)).attr('width', x.bandwidth()).attr('y', m.t).attr('height', h - m.t - m.b).style('fill', 'transparent')
+      .on('pointerenter pointerdown', (ev, r) => {
+        const lines = keys.filter((k) => r[k] > 0).map((k) => [JT.SPORTS.find((s) => s.key === k).label, `${JT.dur(r[k] * 60)} h`]);
+        lines.push(['Total', `${JT.dur(r.total_h * 60)} h`]);
+        if (r.run_km) lines.push(['Running km', JT.dec1(r.run_km)]);
+        lines.push(['Training load', JT.int(r.load)]);
+        tip.show(((x(r.week) + x.bandwidth() / 2) / w) * el.clientWidth, 30, `Week of ${JT.day(r.week)}`, lines);
+      })
+      .on('pointerleave', () => tip.hide());
+  });
+
+  // Running: pace and efficiency.
+  function runChart(name, field, label, fmt, invert) {
+    dash.draw(name, (el) => {
+      const R = dash.data('runs');
+      if (R.status !== 'ok' || !R.data) { JT.empty(el, ['activities']); return; }
+      const rows = R.data.filter((r) => r[field] != null).map((r) => ({ ...r, d: JT.parse(r.date) }));
+      if (rows.length < 2) { el.replaceChildren(); el.textContent = 'Not enough runs yet.'; return; }
+      const { svg, w, h } = JT.svg(el, 190);
+      svg.attr('aria-label', label);
+      const m = { l: 38, r: 10, t: 8, b: 24 };
+      const x = d3.scaleUtc().domain(d3.extent(rows, (r) => r.d)).nice().range([m.l + 4, w - m.r - 4]);
+      const ext = d3.extent(rows, (r) => r[field]);
+      const pad = (ext[1] - ext[0]) * 0.12 || 0.5;
+      const y = d3.scaleLinear().domain(invert ? [ext[1] + pad, ext[0] - pad] : [ext[0] - pad, ext[1] + pad]).range([h - m.b, m.t]);
+      svg.append('g').attr('transform', `translate(${m.l},0)`).call(d3.axisLeft(y).ticks(4).tickFormat(fmt).tickSize(-(w - m.l - m.r))).call((g) => g.select('.domain').remove());
+      svg.append('g').attr('transform', `translate(0,${h - m.b})`).call(d3.axisBottom(x).ticks(Math.max(2, Math.floor((w - m.l - m.r) / 70))).tickFormat((d) => JT.month(d)).tickSizeOuter(0));
+      const roll = rows.map((r, i) => ({ d: r.d, v: d3.mean(rows.slice(Math.max(0, i - 4), i + 1), (q) => q[field]) }));
+      svg.append('path').datum(roll).attr('d', d3.line().x((r) => x(r.d)).y((r) => y(r.v))).style('fill', 'none').style('stroke', dash.colors[1]).style('stroke-width', 2);
+      const r0 = d3.scaleSqrt().domain([0, d3.max(rows, (r) => r.km)]).range([2, 7]);
+      const tip = JT.tip(el);
+      svg.append('g').selectAll('circle').data(rows).join('circle')
+        .attr('cx', (r) => x(r.d)).attr('cy', (r) => y(r[field])).attr('r', (r) => r0(r.km)).style('fill', dash.colors[0]).style('opacity', 0.85)
+        .on('pointerenter pointerdown', (ev, r) => {
+          tip.show((x(r.d) / w) * el.clientWidth, (y(r[field]) / h) * 190, `${JT.day(r.date)} · ${r.name || 'Run'}`, [['Distance', `${JT.dec1(r.km)} km`], ['Pace', `${JT.pace(r.pace)} /km`], ['Avg HR', `${JT.int(r.avg_hr)} bpm`], ['Efficiency', JT.dec2(r.ef)]]);
+        })
+        .on('pointerleave', () => tip.hide());
+    });
+  }
+  runChart('pace', 'pace', 'Average pace of each run over the last 6 months, with the average of the last 5 runs', (v) => JT.pace(v), true);
+  runChart('ef', 'ef', 'Aerobic efficiency of each run over the last 6 months, with the average of the last 5 runs', (v) => JT.dec2(v), false);
+
+  // Activities table.
+  dash.draw('table', (el) => {
+    el.replaceChildren();
+    const T = dash.data('acts');
+    if (T.status !== 'ok' || !T.data) return;
+    T.data.forEach((a) => {
+      const tr = document.createElement('tr');
+      tr.setAttribute('data-key', a.id);
+      const td = (text, cls) => { const c = document.createElement('td'); if (cls) c.className = cls; c.textContent = text; tr.appendChild(c); return c; };
+      td(JT.day(a.date));
+      const n = td('', 'name');
+      const dot = document.createElement('i'); dot.className = 'jt-sport'; dot.style.background = JT.sportColor(a.sport);
+      n.append(dot, document.createTextNode(a.name || ''));
+      td(a.duration);
+      td(a.distance == null ? '' : JT.dec2(a.distance), 'num');
+      td(a.pace || '', 'num');
+      td(a.avg_hr == null ? '' : JT.int(a.avg_hr), 'num');
+      td(a.load == null ? '' : JT.int(a.load), 'num');
+      td(a.te_aerobic == null ? '' : JT.dec1(a.te_aerobic), 'num');
+      el.appendChild(tr);
+    });
+  });
+</script>

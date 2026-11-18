@@ -1,0 +1,7 @@
+# Date personale și tokeni: nu le pune niciodată în repository
+*.json
+!dashboard/datasets.json
+.garminconnect/
+export.log
+.venv/
+__pycache__/
