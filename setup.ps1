@@ -12,7 +12,8 @@
     3. logs you in to Garmin Connect (email and password are not stored, only the session tokens)
     4. finds Google Drive for desktop and creates the folder My Drive\garmin-dashboard
     5. runs the first export
-    6. schedules the export (07:12, then every 3 hours, with no window)
+    6. schedules the export (every hour from 06:12 to 23:12, and whenever you log on or
+       unlock the laptop, with no window; runs closer than 50 minutes apart are skipped)
 
   Optional parameters:
     -DriveFolder "G:\My Drive"   your Google Drive folder, if it is not found automatically
@@ -81,14 +82,40 @@ if ($SkipSchedule) {
     Step 6 'Scheduling the automatic export'
     $runner = if (Test-Path $pyw) { $pyw } else { $py }
     $log = Join-Path $app 'export.log'
-    $arguments = '"{0}" "{1}" --log "{2}"' -f (Join-Path $app 'garmin_export.py'), $out, $log
+    $arguments = '"{0}" "{1}" --log "{2}" --min-interval 50' -f (Join-Path $app 'garmin_export.py'), $out, $log
     $action = New-ScheduledTaskAction -Execute $runner -Argument $arguments -WorkingDirectory $app
-    $trigger = New-ScheduledTaskTrigger -Daily -At 07:12
-    $trigger.Repetition = (New-ScheduledTaskTrigger -Once -At 07:12 -RepetitionInterval (New-TimeSpan -Hours 3) -RepetitionDuration (New-TimeSpan -Hours 15)).Repetition
     $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable -ExecutionTimeLimit (New-TimeSpan -Minutes 20)
-    Register-ScheduledTask -TaskName 'Garmin dashboard export' -Action $action -Trigger $trigger -Settings $settings -Description 'Exports Garmin data to Google Drive for the Training Log dashboard' -Force | Out-Null
+    $task = @{ TaskName = 'Garmin dashboard export'; Action = $action; Settings = $settings; Description = 'Exports Garmin data to Google Drive for the Training Log dashboard'; Force = $true }
+
+    # Every hour from 06:12 to 23:12.
+    $hourly = New-ScheduledTaskTrigger -Daily -At 06:12
+    $hourly.Repetition = (New-ScheduledTaskTrigger -Once -At 06:12 -RepetitionInterval (New-TimeSpan -Hours 1) -RepetitionDuration (New-TimeSpan -Hours 17)).Repetition
+
+    # Also when you log on or unlock the laptop, so a laptop that slept through
+    # the hourly runs catches up as soon as you open it.
+    $triggers = @($hourly)
+    try {
+        $me = "$env:USERDOMAIN\$env:USERNAME"
+        $logon = New-ScheduledTaskTrigger -AtLogOn -User $me
+        $logon.Delay = 'PT2M'
+        $unlockClass = Get-CimClass -ClassName MSFT_TaskSessionStateChangeTrigger -Namespace Root/Microsoft/Windows/TaskScheduler
+        $unlock = New-CimInstance -CimClass $unlockClass -ClientOnly
+        $unlock.StateChange = 8  # workstation unlock
+        $unlock.UserId = $me
+        $unlock.Delay = 'PT2M'
+        $triggers += $logon, $unlock
+    } catch {
+        Write-Host "Could not prepare the logon and unlock triggers: $($_.Exception.Message)" -ForegroundColor Yellow
+    }
+    try {
+        Register-ScheduledTask @task -Trigger $triggers | Out-Null
+        if ($triggers.Count -gt 1) { Write-Host 'Runs every hour, and when you log on or unlock the laptop.' }
+    } catch {
+        Write-Host 'Windows did not accept the logon and unlock triggers, so the export runs every hour only.' -ForegroundColor Yellow
+        Register-ScheduledTask @task -Trigger $hourly | Out-Null
+    }
     $info = Get-ScheduledTaskInfo -TaskName 'Garmin dashboard export'
-    Write-Host "Scheduled. Next run: $($info.NextRunTime). Log of the last run: $log"
+    Write-Host "Scheduled. Next timed run: $($info.NextRunTime). Log of the last run: $log"
 }
 
 Write-Host "`nDone. The next step is in Claude:" -ForegroundColor Green

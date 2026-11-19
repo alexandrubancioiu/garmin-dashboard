@@ -58,8 +58,8 @@ Keep technical words out of what you tell them.
 ## 4. Tell them
 
 - The dashboard reads their Drive files each time it opens, also on the phone;
-  the laptop exports every 3 hours from 07:12, and right after it starts if it
-  was off at that time.
+  the laptop exports every hour from 06:12 to 23:12, and a couple of minutes
+  after they log on or unlock it.
 - Readiness: if the watch computes Garmin Training Readiness, the dashboard
   shows Garmin's score; otherwise it shows its own estimate from sleep, HRV,
   Body Battery, resting heart rate and form, and says so on the card.

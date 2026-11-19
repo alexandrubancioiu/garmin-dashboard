@@ -218,7 +218,23 @@ def main():
     parser = argparse.ArgumentParser(description="Export Garmin data for the Training Log dashboard.")
     parser.add_argument("out", nargs="?", default=str(Path.home() / "garmin-dashboard"), help="folder to write the files to")
     parser.add_argument("--log", help="write messages to this file (for scheduled runs without a window)")
+    parser.add_argument("--min-interval", type=int, default=0, metavar="MINUTES",
+                        help="skip the run if the last export finished less than this many minutes ago")
     args = parser.parse_args()
+
+    # Scheduled runs also start on every unlock and logon; this keeps them from
+    # asking Garmin for the same data again within a few minutes.
+    stamp = Path(__file__).with_name("last_export.txt")
+    if args.min_interval:
+        try:
+            last = datetime.fromisoformat(stamp.read_text(encoding="utf-8").strip())
+        except (OSError, ValueError):
+            last = None
+        if last and datetime.now(timezone.utc) - last < timedelta(minutes=args.min_interval):
+            if args.log:
+                with open(args.log, "a", encoding="utf-8") as log:
+                    log.write(f"Skipped at {datetime.now().isoformat(timespec='seconds')}: the last export was less than {args.min_interval} minutes ago.\n")
+            return 0
 
     if args.log:
         log = open(args.log, "w", encoding="utf-8")
@@ -271,6 +287,7 @@ def main():
     report("activities.json", activities)
     report("daily.json", daily)
     report("status.json", status)
+    stamp.write_text(datetime.now(timezone.utc).isoformat(), encoding="utf-8")
     print(f"\nDone. The files are in {out}")
     return 0
 

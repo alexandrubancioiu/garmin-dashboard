@@ -22,7 +22,7 @@ A TrainingPeaks-style training dashboard built from your Garmin Connect data. It
 
 ```
 Garmin watch ──► Garmin Connect ──► script on your laptop ──► Google Drive ──► dashboard in Claude
-                                     (runs every 3 hours)                       (reads the files each time it opens)
+                                     (runs every hour)                          (reads the files each time it opens)
 ```
 
 Your data stays in your own accounts: Garmin, Google Drive and Claude. The project has no server of its own and sends nothing anywhere else.
@@ -57,7 +57,7 @@ Your data stays in your own accounts: Garmin, Google Drive and Claude. The proje
    ```
 </details>
 
-When it finishes, Google Drive has a `My Drive\garmin-dashboard` folder with three files, and Windows runs the export by itself at 07:12 and then every 3 hours, with no window. If the laptop was off at the scheduled time, the export runs as soon as you turn it on.
+When it finishes, Google Drive has a `My Drive\garmin-dashboard` folder with three files, and Windows runs the export by itself every hour from 06:12 to 23:12, and also whenever you log on or unlock the laptop, with no window. So after a night with the laptop asleep, the dashboard catches up a couple of minutes after you open it.
 
 ### 2. The dashboard in Claude (once, about 2 minutes)
 
@@ -72,7 +72,7 @@ That's it. From then on the dashboard shows the data from the latest export, on 
 ## FAQ
 
 **The dashboard stopped updating.** Look at `%USERPROFILE%\garmin-dashboard\export.log`. The usual causes:
-- *429 / too many requests*: Garmin is rate limiting for a while. The next export, 3 hours later, usually works.
+- *429 / too many requests*: Garmin is rate limiting for a while. The next export, an hour later, usually works.
 - *a login error*: the tokens expired, about once every 6 months. Run:
   ```powershell
   & "$env:USERPROFILE\garmin-dashboard\.venv\Scripts\python.exe" "$env:USERPROFILE\garmin-dashboard\garmin_login.py" --force
