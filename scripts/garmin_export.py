@@ -161,6 +161,7 @@ def daily_row(api, day, readiness):
         "hrv_status": hrv_sum.get("status"),
         "rhr": num(stats.get("restingHeartRate") or sleep.get("restingHeartRate"), 0),
         "stress_avg": num(stress, 0) if stress is not None and stress >= 0 else None,
+        "bb_now": num(stats.get("bodyBatteryMostRecentValue"), 0),
         "bb_high": num(stats.get("bodyBatteryHighestValue"), 0),
         "bb_low": num(stats.get("bodyBatteryLowestValue"), 0),
     }

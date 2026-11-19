@@ -759,15 +759,19 @@
   });
 
   // Cards with the latest day's value and a 14-day sparkline.
-  function tile(prefix, field, unit, sub) {
+  // `now` (optional) names a field shown as the big number when the latest day has it,
+  // with `nowUnit` beside it; otherwise the big number is `field`.
+  function tile(prefix, field, unit, sub, now, nowUnit) {
     dash.draw(`${prefix}-val`, (el) => {
       const d = dash.data('daily');
       el.replaceChildren();
       if (d.status !== 'ok') { JT.empty(el, ['daily']); return; }
       const i = JT.latestIndex(d.data, field);
       if (i < 0) { el.textContent = '—'; return; }
-      JT.mark(el, 'daily', field, i, JT.int(d.data[i][field]));
-      const u = document.createElement('small'); u.textContent = unit; el.appendChild(u);
+      const useNow = now && d.data[i][now] != null;
+      const f = useNow ? now : field;
+      JT.mark(el, 'daily', f, i, JT.int(d.data[i][f]));
+      const u = document.createElement('small'); u.textContent = useNow ? nowUnit : unit; el.appendChild(u);
     });
     dash.draw(`${prefix}-sub`, (el) => {
       const d = dash.data('daily');
@@ -821,10 +825,11 @@
   });
   tile('bb', 'bb_high', 'high', (el, rows, i) => {
     const r = rows[i];
+    if (r.bb_now != null) { el.appendChild(document.createTextNode('high ')); JT.mark(el, 'daily', 'bb_high', i, JT.int(r.bb_high)); el.appendChild(document.createTextNode(' · ')); }
     el.appendChild(document.createTextNode('low '));
     JT.mark(el, 'daily', 'bb_low', i, JT.int(r.bb_low));
     if (r.stress_avg != null) { el.appendChild(document.createTextNode(' · average stress ')); JT.mark(el, 'daily', 'stress_avg', i, JT.int(r.stress_avg)); }
-  });
+  }, 'bb_now', 'now');
 
   // Garmin training status: the word with a coloured dot, the two loads and the acute/chronic ratio bar.
   const STATUS_TONE = { PRODUCTIVE: 'var(--color-ok)', PEAKING: 'var(--color-ok)', MAINTAINING: 'var(--cds-chart-muted)', RECOVERY: 'var(--cds-chart-muted)',
